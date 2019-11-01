@@ -38,6 +38,8 @@ private:
 	/*  User Functions              */
 	/********************************/
 	void Crosshair();
+	void boxCrosshair(int x, int y, Color &c);
+	void cs_Crosshair(int x, int y, Color &c);
 private:
 	MainWindow& wnd;
 	Graphics gfx;

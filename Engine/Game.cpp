@@ -51,10 +51,10 @@ void Game::UpdateModel()
 }
 
 void Game::Crosshair() {
-	static int x = 400;
-	static int y = 300;
-	static Color c = Color(255, 255, 255);
-	static bool cs_Crosshair = true;
+	int x = 400;
+	int y = 300;
+	static Color c = (255, 255, 255);
+	static bool cs_Style = true;
 
 	if ((GetAsyncKeyState(VK_LEFT) & 1) && x!= 300)
 		x -= 100;
@@ -76,10 +76,42 @@ void Game::Crosshair() {
 		red = !red;
 	}
 
-	if(GetAsyncKeyState(VK_SPACE) & 1){
-		cs_Crosshair = !cs_Crosshair;
-	}
-	if(cs_Crosshair){
+	if(GetAsyncKeyState(VK_SPACE) & 1)
+		cs_Style = !cs_Style;
+
+	if(cs_Style)
+		cs_Crosshair(x, y, c);
+	else
+		boxCrosshair(x, y, c);
+}
+
+void Game::boxCrosshair(int x, int y, Color &c) {
+	gfx.PutPixel(x - 5, y - 4, c);
+	gfx.PutPixel(x - 5, y - 5, c);
+	gfx.PutPixel(x - 4, y - 5, c);
+	gfx.PutPixel(x - 5, y - 3, c);
+	gfx.PutPixel(x - 3, y - 5, c);
+
+	gfx.PutPixel(x + 5, y - 4, c);
+	gfx.PutPixel(x + 5, y - 5, c);
+	gfx.PutPixel(x + 4, y - 5, c);
+	gfx.PutPixel(x + 5, y - 3, c);
+	gfx.PutPixel(x + 3, y - 5, c);
+
+	gfx.PutPixel(x - 5, y + 4, c);
+	gfx.PutPixel(x - 5, y + 5, c);
+	gfx.PutPixel(x - 4, y + 5, c);
+	gfx.PutPixel(x - 5, y + 3, c);
+	gfx.PutPixel(x - 3, y + 5, c);
+
+	gfx.PutPixel(x + 5, y + 4, c);
+	gfx.PutPixel(x + 5, y + 5, c);
+	gfx.PutPixel(x + 4, y + 5, c);
+	gfx.PutPixel(x + 5, y + 3, c);
+	gfx.PutPixel(x + 3, y + 5, c);
+}
+
+void Game::cs_Crosshair(int x, int y, Color &c) {
 	gfx.PutPixel(x - 5, y, c);
 	gfx.PutPixel(x - 4, y, c);
 	gfx.PutPixel(x - 3, y, c);
@@ -95,32 +127,6 @@ void Game::Crosshair() {
 	gfx.PutPixel(x, y + 3, c);
 	gfx.PutPixel(x, y + 4, c);
 	gfx.PutPixel(x, y + 5, c);
-	}
-	else {
-		gfx.PutPixel(x - 5, y - 4, c);
-		gfx.PutPixel(x - 5, y - 5, c);
-		gfx.PutPixel(x - 4, y - 5, c);
-		gfx.PutPixel(x - 5, y - 3, c);
-		gfx.PutPixel(x - 3, y - 5, c);
-
-		gfx.PutPixel(x + 5, y - 4, c);
-		gfx.PutPixel(x + 5, y - 5, c);
-		gfx.PutPixel(x + 4, y - 5, c);
-		gfx.PutPixel(x + 5, y - 3, c);
-		gfx.PutPixel(x + 3, y - 5, c);
-
-		gfx.PutPixel(x - 5, y + 4, c);
-		gfx.PutPixel(x - 5, y + 5, c);
-		gfx.PutPixel(x - 4, y + 5, c);
-		gfx.PutPixel(x - 5, y + 3, c);
-		gfx.PutPixel(x - 3, y + 5, c);
-
-		gfx.PutPixel(x + 5, y + 4, c);
-		gfx.PutPixel(x + 5, y + 5, c);
-		gfx.PutPixel(x + 4, y + 5, c);
-		gfx.PutPixel(x + 5, y + 3, c);
-		gfx.PutPixel(x + 3, y + 5, c);
-	}
 }
 
 void Game::ComposeFrame(){
