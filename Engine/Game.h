@@ -37,6 +37,7 @@ private:
 	/********************************/
 	/*  User Functions              */
 	/********************************/
+	void Crosshair();
 private:
 	MainWindow& wnd;
 	Graphics gfx;
