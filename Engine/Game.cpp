@@ -51,50 +51,75 @@ void Game::UpdateModel()
 }
 
 void Game::Crosshair() {
-	int x = 400;
-	int y = 300;
+	static int x = 400;
+	static int y = 300;
+	static Color c = Color(255, 255, 255);
+	static bool cs_Crosshair = true;
 
-	if (wnd.kbd.KeyIsPressed(VK_UP)) {
-		gfx.PutPixel(x - 5, y, 255, 255, 255);
-		gfx.PutPixel(x - 4, y, 255, 255, 255);
-		gfx.PutPixel(x - 3, y, 255, 255, 255);
-		gfx.PutPixel(x + 3, y, 255, 255, 255);
-		gfx.PutPixel(x + 4, y, 255, 255, 255);
-		gfx.PutPixel(x + 5, y, 255, 255, 255);
-		gfx.PutPixel(x, y - 5, 255, 255, 255);
-		gfx.PutPixel(x, y - 4, 255, 255, 255);
-		gfx.PutPixel(x, y - 3, 255, 255, 255);
-		gfx.PutPixel(x, y + 3, 255, 255, 255);
-		gfx.PutPixel(x, y + 4, 255, 255, 255);
-		gfx.PutPixel(x, y + 5, 255, 255, 255);
+	if ((GetAsyncKeyState(VK_LEFT) & 1) && x!= 300)
+		x -= 100;
+	else if ((GetAsyncKeyState(VK_RIGHT) & 1) && x!= 500)
+		x += 100;
+
+	if ((GetAsyncKeyState(VK_UP) & 1) && y!= 200)
+		y -= 100;
+	else if ((GetAsyncKeyState(VK_DOWN) & 1) && y!= 400)
+		y += 100;
+
+	if (GetAsyncKeyState(VK_SHIFT) & 1){
+		static bool red = true;
+		if (red) {
+			c = Color(255, 0, 0); 
+		}
+		else 
+			c = Color(255, 255, 255);
+		red = !red;
 	}
-	else if(wnd.kbd.KeyIsPressed(VK_DOWN)) {
-		gfx.PutPixel(x - 5, y, 0, 255, 0);
-		gfx.PutPixel(x - 4, y, 0, 255, 0);
-		gfx.PutPixel(x - 3, y, 0, 255, 0);
-		gfx.PutPixel(x + 3, y, 0, 255, 0);
-		gfx.PutPixel(x + 4, y, 0, 255, 0);
-		gfx.PutPixel(x + 5, y, 0, 255, 0);
-		gfx.PutPixel(x, y - 5, 0, 255, 0);
-		gfx.PutPixel(x, y - 4, 0, 255, 0);
-		gfx.PutPixel(x, y - 3, 0, 255, 0);
-		gfx.PutPixel(x, y + 3, 0, 255, 0);
-		gfx.PutPixel(x, y + 4, 0, 255, 0);
-		gfx.PutPixel(x, y + 5, 0, 255, 0);
+
+	if(GetAsyncKeyState(VK_SPACE) & 1){
+		cs_Crosshair = !cs_Crosshair;
+	}
+	if(cs_Crosshair){
+	gfx.PutPixel(x - 5, y, c);
+	gfx.PutPixel(x - 4, y, c);
+	gfx.PutPixel(x - 3, y, c);
+
+	gfx.PutPixel(x + 3, y, c);
+	gfx.PutPixel(x + 4, y, c);
+	gfx.PutPixel(x + 5, y, c);
+
+	gfx.PutPixel(x, y - 5, c);
+	gfx.PutPixel(x, y - 4, c);
+	gfx.PutPixel(x, y - 3, c);
+
+	gfx.PutPixel(x, y + 3, c);
+	gfx.PutPixel(x, y + 4, c);
+	gfx.PutPixel(x, y + 5, c);
 	}
 	else {
-		gfx.PutPixel(x - 5, y, 255, 0, 0);
-		gfx.PutPixel(x - 4, y, 255, 0, 0);
-		gfx.PutPixel(x - 3, y, 255, 0, 0);
-		gfx.PutPixel(x + 3, y, 255, 0, 0);
-		gfx.PutPixel(x + 4, y, 255, 0, 0);
-		gfx.PutPixel(x + 5, y, 255, 0, 0);
-		gfx.PutPixel(x, y - 5, 255, 0, 0);
-		gfx.PutPixel(x, y - 4, 255, 0, 0);
-		gfx.PutPixel(x, y - 3, 255, 0, 0);
-		gfx.PutPixel(x, y + 3, 255, 0, 0);
-		gfx.PutPixel(x, y + 4, 255, 0, 0);
-		gfx.PutPixel(x, y + 5, 255, 0, 0);
+		gfx.PutPixel(x - 5, y - 4, c);
+		gfx.PutPixel(x - 5, y - 5, c);
+		gfx.PutPixel(x - 4, y - 5, c);
+		gfx.PutPixel(x - 5, y - 3, c);
+		gfx.PutPixel(x - 3, y - 5, c);
+
+		gfx.PutPixel(x + 5, y - 4, c);
+		gfx.PutPixel(x + 5, y - 5, c);
+		gfx.PutPixel(x + 4, y - 5, c);
+		gfx.PutPixel(x + 5, y - 3, c);
+		gfx.PutPixel(x + 3, y - 5, c);
+
+		gfx.PutPixel(x - 5, y + 4, c);
+		gfx.PutPixel(x - 5, y + 5, c);
+		gfx.PutPixel(x - 4, y + 5, c);
+		gfx.PutPixel(x - 5, y + 3, c);
+		gfx.PutPixel(x - 3, y + 5, c);
+
+		gfx.PutPixel(x + 5, y + 4, c);
+		gfx.PutPixel(x + 5, y + 5, c);
+		gfx.PutPixel(x + 4, y + 5, c);
+		gfx.PutPixel(x + 5, y + 3, c);
+		gfx.PutPixel(x + 3, y + 5, c);
 	}
 }
 
