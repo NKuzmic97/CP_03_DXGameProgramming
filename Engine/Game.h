@@ -43,14 +43,16 @@ private:
 private:
 	MainWindow& wnd;
 	Graphics gfx;
-	float x;
-	float y;
-	Color c;
-	bool ShapeIsChanged;
-	int velocity;
-	int gravity;
-
-
+	int x = 400;
+	int y = 300;
+	int vx = 0;
+	int vy = 1;
+	bool inhibitUp = false; 
+	bool inhibitDown = false;
+	bool inhibitLeft = false;
+	bool inhibitRight = false;
+	Color c = Color(255,255,255);
+	bool ShapeIsChanged = true;
 	/********************************/
 	/*  User Variables              */
 	/********************************/

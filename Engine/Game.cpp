@@ -35,13 +35,7 @@ void Game::NoSignal() {
 Game::Game( MainWindow& wnd )
 	:
 	wnd( wnd ),
-	gfx( wnd ),
-	x(400),
-	y(300),
-	c(255, 255, 255),
-	ShapeIsChanged(true),
-	velocity(0),
-	gravity(1)
+	gfx( wnd )
 {
 }
 
@@ -53,16 +47,46 @@ void Game::Go(){
 }
 
 void Game::UpdateModel() {
+	if (wnd.kbd.KeyIsPressed(VK_LEFT)) {
+		if(inhibitLeft){}
+		else {
+			vx = vx - 1;
+			inhibitLeft = true;
+		}
+	}
+	else
+		inhibitLeft = false;
 
-	if (wnd.kbd.KeyIsPressed(VK_LEFT))
-		velocity = -1;
-	else if (wnd.kbd.KeyIsPressed(VK_RIGHT))
-		velocity = 1;
+	if (wnd.kbd.KeyIsPressed(VK_RIGHT)) {
+		if (inhibitRight) {}
+		else {
+			vx = vx + 1;
+			inhibitRight = true;
+		}
+	}
+	else
+		inhibitRight = false;
 
-	if (wnd.kbd.KeyIsPressed(VK_UP))
-		gravity = -1;
-	else 
-		gravity = 1;
+	if (wnd.kbd.KeyIsPressed(VK_UP)) {
+		if (inhibitUp) {}
+		else {
+			vy = vy - 1;
+			inhibitUp = true;
+		}
+	}
+	else
+		inhibitUp = false;
+
+	if (wnd.kbd.KeyIsPressed(VK_DOWN)) {
+		if (inhibitDown) {}
+		else {
+			vy = vy + 1;
+			inhibitDown = true;
+		}
+	}
+	else
+		inhibitDown = false;
+
 
 	if (GetAsyncKeyState(VK_SHIFT) & 1) {
 		static bool red = true;
@@ -77,8 +101,8 @@ void Game::UpdateModel() {
 	if (GetAsyncKeyState(VK_SPACE) & 1)
 		ShapeIsChanged = !ShapeIsChanged;
 	
-	x += velocity;
-	y += gravity;
+	x += vx;
+	y += vy;
 }
 
 void Game::BoxCrosshair(int x, int y, Color &c) {
