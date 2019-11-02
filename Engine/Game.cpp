@@ -22,19 +22,23 @@
 #include "Game.h"
 #include <iostream>
 
-void NoSignal(Graphics& gfx) {
-	int x, y;
+void Game::NoSignal() {
 	for (x = 0; x < gfx.ScreenWidth; x++) {
 		for (y = 0; y < gfx.ScreenHeight; y++) {
 			gfx.PutPixel(x, y, rand(), rand(), rand());
 		}
 	}
+	x = 400;
+	y = 300;
 }
 
 Game::Game( MainWindow& wnd )
 	:
 	wnd( wnd ),
-	gfx( wnd )
+	gfx( wnd ),
+	x(400),
+	y(300),
+	c(255, 255, 255)
 {
 }
 
@@ -51,20 +55,17 @@ void Game::UpdateModel()
 }
 
 void Game::Crosshair() {
-	int x = 400;
-	int y = 300;
-	static Color c = (255, 255, 255);
-	static bool cs_Style = true;
+	static bool CS_Style = true;
 
-	if ((GetAsyncKeyState(VK_LEFT) & 1) && x!= 300)
-		x -= 100;
-	else if ((GetAsyncKeyState(VK_RIGHT) & 1) && x!= 500)
-		x += 100;
+	if (wnd.kbd.KeyIsPressed(VK_LEFT))
+		x -= 3;
+	else if (wnd.kbd.KeyIsPressed(VK_RIGHT))
+		x += 3;
 
-	if ((GetAsyncKeyState(VK_UP) & 1) && y!= 200)
-		y -= 100;
-	else if ((GetAsyncKeyState(VK_DOWN) & 1) && y!= 400)
-		y += 100;
+	if (wnd.kbd.KeyIsPressed(VK_UP))
+		y -= 3;
+	else if (wnd.kbd.KeyIsPressed(VK_DOWN))
+		y += 3;
 
 	if (GetAsyncKeyState(VK_SHIFT) & 1){
 		static bool red = true;
@@ -77,31 +78,32 @@ void Game::Crosshair() {
 	}
 
 	if(GetAsyncKeyState(VK_SPACE) & 1)
-		cs_Style = !cs_Style;
+		CS_Style = !CS_Style;
 
-	if(cs_Style)
-		cs_Crosshair(x, y, c);
+	if (CS_Style)
+		CS_Crosshair(x, y, c);
 	else
-		boxCrosshair(x, y, c);
-}
+		BoxCrosshair(x, y, c);
+	}
 
-void Game::boxCrosshair(int x, int y, Color &c) {
-	gfx.PutPixel(x - 5, y - 4, c);
+void Game::BoxCrosshair(int x, int y, Color &c) {
 	gfx.PutPixel(x - 5, y - 5, c);
 	gfx.PutPixel(x - 4, y - 5, c);
-	gfx.PutPixel(x - 5, y - 3, c);
 	gfx.PutPixel(x - 3, y - 5, c);
+	gfx.PutPixel(x - 5, y - 4, c);
+	gfx.PutPixel(x - 5, y - 3, c);
 
-	gfx.PutPixel(x + 5, y - 4, c);
 	gfx.PutPixel(x + 5, y - 5, c);
-	gfx.PutPixel(x + 4, y - 5, c);
+	gfx.PutPixel(x + 5, y - 4, c);
 	gfx.PutPixel(x + 5, y - 3, c);
+	gfx.PutPixel(x + 4, y - 5, c);
 	gfx.PutPixel(x + 3, y - 5, c);
 
 	gfx.PutPixel(x - 5, y + 4, c);
 	gfx.PutPixel(x - 5, y + 5, c);
-	gfx.PutPixel(x - 4, y + 5, c);
 	gfx.PutPixel(x - 5, y + 3, c);
+
+	gfx.PutPixel(x - 4, y + 5, c);
 	gfx.PutPixel(x - 3, y + 5, c);
 
 	gfx.PutPixel(x + 5, y + 4, c);
@@ -111,7 +113,7 @@ void Game::boxCrosshair(int x, int y, Color &c) {
 	gfx.PutPixel(x + 3, y + 5, c);
 }
 
-void Game::cs_Crosshair(int x, int y, Color &c) {
+void Game::CS_Crosshair(int x, int y, Color &c) {
 	gfx.PutPixel(x - 5, y, c);
 	gfx.PutPixel(x - 4, y, c);
 	gfx.PutPixel(x - 3, y, c);
