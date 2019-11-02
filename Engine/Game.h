@@ -37,16 +37,19 @@ private:
 	/********************************/
 	/*  User Functions              */
 	/********************************/
-	void Crosshair();
 	void BoxCrosshair(int x, int y, Color &c);
 	void CS_Crosshair(int x, int y, Color &c);
 	void NoSignal();
 private:
 	MainWindow& wnd;
 	Graphics gfx;
-	int x;
-	int y;
+	float x;
+	float y;
 	Color c;
+	bool ShapeIsChanged;
+	int velocity;
+	int gravity;
+
 
 	/********************************/
 	/*  User Variables              */

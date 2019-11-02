@@ -38,53 +38,48 @@ Game::Game( MainWindow& wnd )
 	gfx( wnd ),
 	x(400),
 	y(300),
-	c(255, 255, 255)
+	c(255, 255, 255),
+	ShapeIsChanged(true),
+	velocity(0),
+	gravity(1)
 {
 }
 
-void Game::Go()
-{
+void Game::Go(){
 	gfx.BeginFrame();	
 	UpdateModel();
 	ComposeFrame();
 	gfx.EndFrame();
 }
 
-void Game::UpdateModel()
-{
-}
-
-void Game::Crosshair() {
-	static bool CS_Style = true;
+void Game::UpdateModel() {
 
 	if (wnd.kbd.KeyIsPressed(VK_LEFT))
-		x -= 3;
+		velocity = -1;
 	else if (wnd.kbd.KeyIsPressed(VK_RIGHT))
-		x += 3;
+		velocity = 1;
 
 	if (wnd.kbd.KeyIsPressed(VK_UP))
-		y -= 3;
-	else if (wnd.kbd.KeyIsPressed(VK_DOWN))
-		y += 3;
+		gravity = -1;
+	else 
+		gravity = 1;
 
-	if (GetAsyncKeyState(VK_SHIFT) & 1){
+	if (GetAsyncKeyState(VK_SHIFT) & 1) {
 		static bool red = true;
 		if (red) {
-			c = Color(255, 0, 0); 
+			c = Color(255, 0, 0);
 		}
-		else 
+		else
 			c = Color(255, 255, 255);
 		red = !red;
 	}
 
-	if(GetAsyncKeyState(VK_SPACE) & 1)
-		CS_Style = !CS_Style;
-
-	if (CS_Style)
-		CS_Crosshair(x, y, c);
-	else
-		BoxCrosshair(x, y, c);
-	}
+	if (GetAsyncKeyState(VK_SPACE) & 1)
+		ShapeIsChanged = !ShapeIsChanged;
+	
+	x += velocity;
+	y += gravity;
+}
 
 void Game::BoxCrosshair(int x, int y, Color &c) {
 	gfx.PutPixel(x - 5, y - 5, c);
@@ -102,7 +97,6 @@ void Game::BoxCrosshair(int x, int y, Color &c) {
 	gfx.PutPixel(x - 5, y + 4, c);
 	gfx.PutPixel(x - 5, y + 5, c);
 	gfx.PutPixel(x - 5, y + 3, c);
-
 	gfx.PutPixel(x - 4, y + 5, c);
 	gfx.PutPixel(x - 3, y + 5, c);
 
@@ -132,5 +126,8 @@ void Game::CS_Crosshair(int x, int y, Color &c) {
 }
 
 void Game::ComposeFrame(){
-	Crosshair();
+	if (ShapeIsChanged)
+		CS_Crosshair(x, y, c);
+	else
+		BoxCrosshair(x, y, c);
 }
