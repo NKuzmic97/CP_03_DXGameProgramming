@@ -34,6 +34,8 @@ public:
 private:
 	void ComposeFrame();
 	void UpdateModel();
+	inline void DisableYVelocity();
+	inline void DisableXVelocity();
 	/********************************/
 	/*  User Functions              */
 	/********************************/

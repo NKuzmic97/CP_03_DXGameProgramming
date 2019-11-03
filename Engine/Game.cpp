@@ -87,22 +87,44 @@ void Game::UpdateModel() {
 	else
 		inhibitDown = false;
 
-
-	if (GetAsyncKeyState(VK_SHIFT) & 1) {
-		static bool red = true;
-		if (red) {
-			c = Color(255, 0, 0);
-		}
-		else
-			c = Color(255, 255, 255);
-		red = !red;
-	}
-
 	if (GetAsyncKeyState(VK_SPACE) & 1)
 		ShapeIsChanged = !ShapeIsChanged;
 	
 	x += vx;
 	y += vy;
+
+	if (x + 5 >= gfx.ScreenWidth) {
+		x = gfx.ScreenWidth - 5 - 1;
+		DisableXVelocity();
+	}
+	if (x - 5 < 0){
+		x = 5;
+		DisableXVelocity();
+	}
+
+	if (y + 5 >= gfx.ScreenHeight){
+		y = gfx.ScreenHeight - 5 - 1;
+		DisableYVelocity();
+	}
+
+	if (y - 5 < 0){
+		y = 5;
+		DisableYVelocity();
+	}
+
+	if (x > 300 && x < 500)
+		c = Color(0, 255, 0);
+	else
+		c = Color(255, 255, 255);
+
+}
+
+void Game::DisableYVelocity() {
+	vy = 0;
+}
+
+void Game::DisableXVelocity() {
+	vx = 0;
 }
 
 void Game::BoxCrosshair(int x, int y, Color &c) {
