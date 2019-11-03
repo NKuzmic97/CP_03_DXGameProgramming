@@ -1,5 +1,5 @@
-/****************************************************************************************** 
- *	Chili DirectX Framework Version 16.07.20											  *	
+/******************************************************************************************
+ *	Chili DirectX Framework Version 16.07.20											  *
  *	Game.cpp																			  *
  *	Copyright 2016 PlanetChili.net <http://www.planetchili.net>							  *
  *																						  *
@@ -20,153 +20,126 @@
  ******************************************************************************************/
 #include "MainWindow.h"
 #include "Game.h"
-#include <iostream>
 
-Game::Game( MainWindow& wnd )
+Game::Game(MainWindow& wnd)
 	:
-	wnd( wnd ),
-	gfx( wnd )
-{
+	wnd(wnd),
+	gfx(wnd) {
 }
 
-void Game::Go(){
-	gfx.BeginFrame();	
+void Game::Go() {
+	gfx.BeginFrame();
 	UpdateModel();
 	ComposeFrame();
 	gfx.EndFrame();
 }
 
 void Game::UpdateModel() {
-	InhibitMovement();
-
-	cs_mobile.x += vx;
-	cs_mobile.y += vy;
-
-	CheckScreenBoundaries(cs_mobile);
-
-	if (Collision(cs_mobile,cs_fixed) || Collision(cs_mobile,cs0) || Collision(cs_mobile,cs1))
-		cs_mobile.c = Color(255, 0, 0);
-	else
-		cs_mobile.c = Color(255, 255, 255);
-}
-
-void Game::CheckScreenBoundaries(Crosshair & cs) {
-	if (cs.x + 5 >= gfx.ScreenWidth) {
-		cs.x = gfx.ScreenWidth - 5 - 1;
-		DisableXVelocity();
-	}
-	if (cs.x - 5 < 0) {
-		cs.x = 5;
-		DisableXVelocity();
-	}
-
-	if (cs.y + 5 >= gfx.ScreenHeight) {
-		cs.y = gfx.ScreenHeight - 5 - 1;
-		DisableYVelocity();
-	}
-
-	if (cs.y - 5 < 0) {
-		cs.y = 5;
-		DisableYVelocity();
-	}
-}
-
-void Game::InhibitMovement() {
-	if (wnd.kbd.KeyIsPressed(VK_LEFT)) {
-		if (inhibitLeft) {}
-		else {
-			vx = vx - 1;
-			inhibitLeft = true;
-		}
-	}
-	else
-		inhibitLeft = false;
-
 	if (wnd.kbd.KeyIsPressed(VK_RIGHT)) {
-		if (inhibitRight) {}
-		else {
-			vx = vx + 1;
-			inhibitRight = true;
-		}
+		x_mobile = x_mobile + 1;
 	}
-	else
-		inhibitRight = false;
 
-	if (wnd.kbd.KeyIsPressed(VK_UP)) {
-		if (inhibitUp) {}
-		else {
-			vy = vy - 1;
-			inhibitUp = true;
-		}
+	if (wnd.kbd.KeyIsPressed(VK_LEFT)) {
+		x_mobile = x_mobile - 1;
 	}
-	else
-		inhibitUp = false;
 
 	if (wnd.kbd.KeyIsPressed(VK_DOWN)) {
-		if (inhibitDown) {}
-		else {
-			vy = vy + 1;
-			inhibitDown = true;
-		}
+		y_mobile = y_mobile + 1;
 	}
-	else
-		inhibitDown = false;
+
+	if (wnd.kbd.KeyIsPressed(VK_UP)) {
+		y_mobile = y_mobile - 1;
+	}
+
+	x_mobile = ClampScreenX(x_mobile);
+	y_mobile = ClampScreenY(y_mobile);
+
+	colliding =
+		OverlapTest(x_fixed0, y_fixed0, x_mobile, y_mobile) ||
+		OverlapTest(x_fixed1, y_fixed1, x_mobile, y_mobile) ||
+		OverlapTest(x_fixed2, y_fixed2, x_mobile, y_mobile) ||
+		OverlapTest(x_fixed3, y_fixed3, x_mobile, y_mobile);
 }
 
-void Game::BoxCrosshair(Crosshair& cs) {
-	if(cs.alive){
-	gfx.PutPixel(cs.x - 5, cs.y - 5, cs.c);
-	gfx.PutPixel(cs.x - 4, cs.y - 5, cs.c);
-	gfx.PutPixel(cs.x - 3, cs.y - 5, cs.c);
-	gfx.PutPixel(cs.x - 5, cs.y - 4, cs.c);
-	gfx.PutPixel(cs.x - 5, cs.y - 3, cs.c);
+void Game::ComposeFrame() {
+	DrawBox(x_fixed0, y_fixed0, 0, 255, 0);
+	DrawBox(x_fixed1, y_fixed1, 0, 255, 0);
+	DrawBox(x_fixed2, y_fixed2, 0, 255, 0);
+	DrawBox(x_fixed3, y_fixed3, 0, 255, 0);
 
-	gfx.PutPixel(cs.x + 5, cs.y - 5, cs.c);
-	gfx.PutPixel(cs.x + 5, cs.y - 4, cs.c);
-	gfx.PutPixel(cs.x + 5, cs.y - 3, cs.c);
-	gfx.PutPixel(cs.x + 4, cs.y - 5, cs.c);
-	gfx.PutPixel(cs.x + 3, cs.y - 5, cs.c);
-
-	gfx.PutPixel(cs.x - 5, cs.y + 4, cs.c);
-	gfx.PutPixel(cs.x - 5, cs.y + 5, cs.c);
-	gfx.PutPixel(cs.x - 5, cs.y + 3, cs.c);
-	gfx.PutPixel(cs.x - 4, cs.y + 5, cs.c);
-	gfx.PutPixel(cs.x - 3, cs.y + 5, cs.c);
-
-	gfx.PutPixel(cs.x + 5, cs.y + 4, cs.c);
-	gfx.PutPixel(cs.x + 5, cs.y + 5, cs.c);
-	gfx.PutPixel(cs.x + 4, cs.y + 5, cs.c);
-	gfx.PutPixel(cs.x + 5, cs.y + 3, cs.c);
-	gfx.PutPixel(cs.x + 3, cs.y + 5, cs.c);
-}}
-
-void Game::CS_Crosshair(int x, int y, Color &c) {
-	gfx.PutPixel(x - 5, y, c);
-	gfx.PutPixel(x - 4, y, c);
-	gfx.PutPixel(x - 3, y, c);
-
-	gfx.PutPixel(x + 3, y, c);
-	gfx.PutPixel(x + 4, y, c);
-	gfx.PutPixel(x + 5, y, c);
-
-	gfx.PutPixel(x, y - 5, c);
-	gfx.PutPixel(x, y - 4, c);
-	gfx.PutPixel(x, y - 3, c);
-
-	gfx.PutPixel(x, y + 3, c);
-	gfx.PutPixel(x, y + 4, c);
-	gfx.PutPixel(x, y + 5, c);
+	if (colliding) {
+		DrawBox(x_mobile, y_mobile, 255, 0, 0);
+	}
+	else {
+		DrawBox(x_mobile, y_mobile, 255, 255, 255);
+	}
 }
 
-bool Game::Collision(Crosshair & player,Crosshair & other) {
-	bool collision = abs(player.x - other.x) <= 10 && abs(player.y - other.y) <= 10;
-	if (collision) other.alive = false;
-	return collision;
+void Game::DrawBox(int x, int y, int r, int g, int b) {
+	gfx.PutPixel(-5 + x, -5 + y, r, g, b);
+	gfx.PutPixel(-5 + x, -4 + y, r, g, b);
+	gfx.PutPixel(-5 + x, -3 + y, r, g, b);
+	gfx.PutPixel(-4 + x, -5 + y, r, g, b);
+	gfx.PutPixel(-3 + x, -5 + y, r, g, b);
+	gfx.PutPixel(-5 + x, 5 + y, r, g, b);
+	gfx.PutPixel(-5 + x, 4 + y, r, g, b);
+	gfx.PutPixel(-5 + x, 3 + y, r, g, b);
+	gfx.PutPixel(-4 + x, 5 + y, r, g, b);
+	gfx.PutPixel(-3 + x, 5 + y, r, g, b);
+	gfx.PutPixel(5 + x, -5 + y, r, g, b);
+	gfx.PutPixel(5 + x, -4 + y, r, g, b);
+	gfx.PutPixel(5 + x, -3 + y, r, g, b);
+	gfx.PutPixel(4 + x, -5 + y, r, g, b);
+	gfx.PutPixel(3 + x, -5 + y, r, g, b);
+	gfx.PutPixel(5 + x, 5 + y, r, g, b);
+	gfx.PutPixel(5 + x, 4 + y, r, g, b);
+	gfx.PutPixel(5 + x, 3 + y, r, g, b);
+	gfx.PutPixel(4 + x, 5 + y, r, g, b);
+	gfx.PutPixel(3 + x, 5 + y, r, g, b);
 }
 
-void Game::ComposeFrame(){
-	BoxCrosshair(cs_mobile);
-	BoxCrosshair(cs_fixed);
-	BoxCrosshair(cs0);
-	BoxCrosshair(cs1);
+bool Game::OverlapTest(int box0x, int box0y, int box1x, int box1y) {
+	const int left_box0 = box0x - 5;
+	const int right_box0 = box0x + 5;
+	const int top_box0 = box0y - 5;
+	const int bottom_box0 = box0y + 5;
+
+	const int left_box1 = box1x - 5;
+	const int right_box1 = box1x + 5;
+	const int top_box1 = box1y - 5;
+	const int bottom_box1 = box1y + 5;
+
+	return
+		left_box0 <= right_box1 &&
+		right_box0 >= left_box1 &&
+		top_box0 <= bottom_box1 &&
+		bottom_box0 >= top_box1;
+}
+
+int Game::ClampScreenX(int x) {
+	const int left = x - 5;
+	const int right = x + 5;
+	if (left < 0) {
+		return 5;
+	}
+	else if (right >= gfx.ScreenWidth) {
+		return gfx.ScreenWidth - 6;
+	}
+	else {
+		return x;
+	}
+}
+
+int Game::ClampScreenY(int y) {
+	const int top = y - 5;
+	const int bottom = y + 5;
+	if (top < 0) {
+		return 5;
+	}
+	else if (bottom >= gfx.ScreenHeight) {
+		return gfx.ScreenHeight - 6;
+	}
+	else {
+		return y;
+	}
 }

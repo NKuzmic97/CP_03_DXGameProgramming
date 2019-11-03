@@ -1,5 +1,5 @@
-/****************************************************************************************** 
- *	Chili DirectX Framework Version 16.07.20											  *	
+/******************************************************************************************
+ *	Chili DirectX Framework Version 16.07.20											  *
  *	Game.h																				  *
  *	Copyright 2016 PlanetChili.net <http://www.planetchili.net>							  *
  *																						  *
@@ -25,43 +25,36 @@
 #include "Graphics.h"
 
 class Game {
-	struct Crosshair {
-		int x = 400, y = 300;
-		Color c = Color(255,255,255);
-		bool alive = true;
-		Crosshair(int x,int y,Color c):x(x),y(y),c(c){}
-		Crosshair() = default;
-	};
-
 public:
-	Game( class MainWindow& wnd );
-	Game( const Game& ) = delete;
-	Game& operator=( const Game& ) = delete;
+	Game(class MainWindow& wnd);
+	Game(const Game&) = delete;
+	Game& operator=(const Game&) = delete;
 	void Go();
 private:
 	void ComposeFrame();
 	void UpdateModel();
-	void CheckScreenBoundaries(Crosshair& cs);
-	void InhibitMovement();
-	inline void DisableYVelocity() { vy = 0; };
-	inline void DisableXVelocity() { vx = 0; };
-	void BoxCrosshair(Crosshair& cs);
-	void CS_Crosshair(int x, int y, Color &c);
-	bool Collision(Crosshair& player, Crosshair& other);
+	/********************************/
+	/*  User Functions              */
+	void DrawBox(int x, int y, int r, int g, int b);
+	bool OverlapTest(int box0x, int box0y, int box1x, int box1y);
+	int ClampScreenX(int x);
+	int ClampScreenY(int y);
+	/********************************/
 private:
 	MainWindow& wnd;
 	Graphics gfx;
-
-	Crosshair cs_mobile;
-	Crosshair cs_fixed = Crosshair(150, 250, Color(0, 255, 0));
-	Crosshair cs0 = Crosshair(50, 400, Color(255, 255, 0));
-	Crosshair cs1 = Crosshair(500, 300, Color(0, 255, 255));
-
-	int vx = 0;
-	int vy = 1;
-
-	bool inhibitUp = false; 
-	bool inhibitDown = false;
-	bool inhibitLeft = false;
-	bool inhibitRight = false;
+	/********************************/
+	/*  User Variables              */
+	int x_fixed0 = 700;
+	int y_fixed0 = 200;
+	int x_fixed1 = 215;
+	int y_fixed1 = 200;
+	int x_fixed2 = 200;
+	int y_fixed2 = 220;
+	int x_fixed3 = 230;
+	int y_fixed3 = 220;
+	int x_mobile = 700;
+	int y_mobile = 200;
+	bool colliding = false;
+	/********************************/
 };
