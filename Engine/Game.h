@@ -47,6 +47,8 @@ private:
 	Graphics gfx;
 	int x = 400;
 	int y = 300;
+	int x1 = 150;
+	int y1 = 250;
 	int vx = 0;
 	int vy = 1;
 	bool inhibitUp = false; 
@@ -54,7 +56,7 @@ private:
 	bool inhibitLeft = false;
 	bool inhibitRight = false;
 	Color c = Color(255,255,255);
-	bool ShapeIsChanged = true;
+	Color c1 = Color(0, 255, 0);
 	/********************************/
 	/*  User Variables              */
 	/********************************/

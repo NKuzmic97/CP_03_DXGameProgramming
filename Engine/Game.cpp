@@ -87,9 +87,6 @@ void Game::UpdateModel() {
 	else
 		inhibitDown = false;
 
-	if (GetAsyncKeyState(VK_SPACE) & 1)
-		ShapeIsChanged = !ShapeIsChanged;
-	
 	x += vx;
 	y += vy;
 
@@ -112,11 +109,10 @@ void Game::UpdateModel() {
 		DisableYVelocity();
 	}
 
-	if (x > 300 && x < 500)
-		c = Color(0, 255, 0);
+	if (abs(x - x1) <= 10 && abs(y - y1) <= 10)
+		c = Color(255, 0, 0);
 	else
 		c = Color(255, 255, 255);
-
 }
 
 void Game::DisableYVelocity() {
@@ -172,8 +168,6 @@ void Game::CS_Crosshair(int x, int y, Color &c) {
 }
 
 void Game::ComposeFrame(){
-	if (ShapeIsChanged)
-		CS_Crosshair(x, y, c);
-	else
-		BoxCrosshair(x, y, c);
+	BoxCrosshair(x, y, c);
+	BoxCrosshair(x1, y1, c1);
 }
