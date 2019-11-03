@@ -22,16 +22,6 @@
 #include "Game.h"
 #include <iostream>
 
-void Game::NoSignal() {
-	for (x = 0; x < gfx.ScreenWidth; x++) {
-		for (y = 0; y < gfx.ScreenHeight; y++) {
-			gfx.PutPixel(x, y, rand(), rand(), rand());
-		}
-	}
-	x = 400;
-	y = 300;
-}
-
 Game::Game( MainWindow& wnd )
 	:
 	wnd( wnd ),
@@ -47,8 +37,43 @@ void Game::Go(){
 }
 
 void Game::UpdateModel() {
+	InhibitMovement();
+
+	cs_mobile.x += vx;
+	cs_mobile.y += vy;
+
+	CheckScreenBoundaries(cs_mobile);
+
+	if (Collision(cs_mobile,cs_fixed) || Collision(cs_mobile,cs0) || Collision(cs_mobile,cs1))
+		cs_mobile.c = Color(255, 0, 0);
+	else
+		cs_mobile.c = Color(255, 255, 255);
+}
+
+void Game::CheckScreenBoundaries(Crosshair & cs) {
+	if (cs.x + 5 >= gfx.ScreenWidth) {
+		cs.x = gfx.ScreenWidth - 5 - 1;
+		DisableXVelocity();
+	}
+	if (cs.x - 5 < 0) {
+		cs.x = 5;
+		DisableXVelocity();
+	}
+
+	if (cs.y + 5 >= gfx.ScreenHeight) {
+		cs.y = gfx.ScreenHeight - 5 - 1;
+		DisableYVelocity();
+	}
+
+	if (cs.y - 5 < 0) {
+		cs.y = 5;
+		DisableYVelocity();
+	}
+}
+
+void Game::InhibitMovement() {
 	if (wnd.kbd.KeyIsPressed(VK_LEFT)) {
-		if(inhibitLeft){}
+		if (inhibitLeft) {}
 		else {
 			vx = vx - 1;
 			inhibitLeft = true;
@@ -86,68 +111,34 @@ void Game::UpdateModel() {
 	}
 	else
 		inhibitDown = false;
-
-	x += vx;
-	y += vy;
-
-	if (x + 5 >= gfx.ScreenWidth) {
-		x = gfx.ScreenWidth - 5 - 1;
-		DisableXVelocity();
-	}
-	if (x - 5 < 0){
-		x = 5;
-		DisableXVelocity();
-	}
-
-	if (y + 5 >= gfx.ScreenHeight){
-		y = gfx.ScreenHeight - 5 - 1;
-		DisableYVelocity();
-	}
-
-	if (y - 5 < 0){
-		y = 5;
-		DisableYVelocity();
-	}
-
-	if (abs(x - x1) <= 10 && abs(y - y1) <= 10)
-		c = Color(255, 0, 0);
-	else
-		c = Color(255, 255, 255);
 }
 
-void Game::DisableYVelocity() {
-	vy = 0;
-}
+void Game::BoxCrosshair(Crosshair& cs) {
+	if(cs.alive){
+	gfx.PutPixel(cs.x - 5, cs.y - 5, cs.c);
+	gfx.PutPixel(cs.x - 4, cs.y - 5, cs.c);
+	gfx.PutPixel(cs.x - 3, cs.y - 5, cs.c);
+	gfx.PutPixel(cs.x - 5, cs.y - 4, cs.c);
+	gfx.PutPixel(cs.x - 5, cs.y - 3, cs.c);
 
-void Game::DisableXVelocity() {
-	vx = 0;
-}
+	gfx.PutPixel(cs.x + 5, cs.y - 5, cs.c);
+	gfx.PutPixel(cs.x + 5, cs.y - 4, cs.c);
+	gfx.PutPixel(cs.x + 5, cs.y - 3, cs.c);
+	gfx.PutPixel(cs.x + 4, cs.y - 5, cs.c);
+	gfx.PutPixel(cs.x + 3, cs.y - 5, cs.c);
 
-void Game::BoxCrosshair(int x, int y, Color &c) {
-	gfx.PutPixel(x - 5, y - 5, c);
-	gfx.PutPixel(x - 4, y - 5, c);
-	gfx.PutPixel(x - 3, y - 5, c);
-	gfx.PutPixel(x - 5, y - 4, c);
-	gfx.PutPixel(x - 5, y - 3, c);
+	gfx.PutPixel(cs.x - 5, cs.y + 4, cs.c);
+	gfx.PutPixel(cs.x - 5, cs.y + 5, cs.c);
+	gfx.PutPixel(cs.x - 5, cs.y + 3, cs.c);
+	gfx.PutPixel(cs.x - 4, cs.y + 5, cs.c);
+	gfx.PutPixel(cs.x - 3, cs.y + 5, cs.c);
 
-	gfx.PutPixel(x + 5, y - 5, c);
-	gfx.PutPixel(x + 5, y - 4, c);
-	gfx.PutPixel(x + 5, y - 3, c);
-	gfx.PutPixel(x + 4, y - 5, c);
-	gfx.PutPixel(x + 3, y - 5, c);
-
-	gfx.PutPixel(x - 5, y + 4, c);
-	gfx.PutPixel(x - 5, y + 5, c);
-	gfx.PutPixel(x - 5, y + 3, c);
-	gfx.PutPixel(x - 4, y + 5, c);
-	gfx.PutPixel(x - 3, y + 5, c);
-
-	gfx.PutPixel(x + 5, y + 4, c);
-	gfx.PutPixel(x + 5, y + 5, c);
-	gfx.PutPixel(x + 4, y + 5, c);
-	gfx.PutPixel(x + 5, y + 3, c);
-	gfx.PutPixel(x + 3, y + 5, c);
-}
+	gfx.PutPixel(cs.x + 5, cs.y + 4, cs.c);
+	gfx.PutPixel(cs.x + 5, cs.y + 5, cs.c);
+	gfx.PutPixel(cs.x + 4, cs.y + 5, cs.c);
+	gfx.PutPixel(cs.x + 5, cs.y + 3, cs.c);
+	gfx.PutPixel(cs.x + 3, cs.y + 5, cs.c);
+}}
 
 void Game::CS_Crosshair(int x, int y, Color &c) {
 	gfx.PutPixel(x - 5, y, c);
@@ -167,7 +158,15 @@ void Game::CS_Crosshair(int x, int y, Color &c) {
 	gfx.PutPixel(x, y + 5, c);
 }
 
+bool Game::Collision(Crosshair & player,Crosshair & other) {
+	bool collision = abs(player.x - other.x) <= 10 && abs(player.y - other.y) <= 10;
+	if (collision) other.alive = false;
+	return collision;
+}
+
 void Game::ComposeFrame(){
-	BoxCrosshair(x, y, c);
-	BoxCrosshair(x1, y1, c1);
+	BoxCrosshair(cs_mobile);
+	BoxCrosshair(cs_fixed);
+	BoxCrosshair(cs0);
+	BoxCrosshair(cs1);
 }

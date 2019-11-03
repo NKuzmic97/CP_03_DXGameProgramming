@@ -24,8 +24,15 @@
 #include "Mouse.h"
 #include "Graphics.h"
 
-class Game
-{
+class Game {
+	struct Crosshair {
+		int x = 400, y = 300;
+		Color c = Color(255,255,255);
+		bool alive = true;
+		Crosshair(int x,int y,Color c):x(x),y(y),c(c){}
+		Crosshair() = default;
+	};
+
 public:
 	Game( class MainWindow& wnd );
 	Game( const Game& ) = delete;
@@ -34,30 +41,27 @@ public:
 private:
 	void ComposeFrame();
 	void UpdateModel();
-	inline void DisableYVelocity();
-	inline void DisableXVelocity();
-	/********************************/
-	/*  User Functions              */
-	/********************************/
-	void BoxCrosshair(int x, int y, Color &c);
+	void CheckScreenBoundaries(Crosshair& cs);
+	void InhibitMovement();
+	inline void DisableYVelocity() { vy = 0; };
+	inline void DisableXVelocity() { vx = 0; };
+	void BoxCrosshair(Crosshair& cs);
 	void CS_Crosshair(int x, int y, Color &c);
-	void NoSignal();
+	bool Collision(Crosshair& player, Crosshair& other);
 private:
 	MainWindow& wnd;
 	Graphics gfx;
-	int x = 400;
-	int y = 300;
-	int x1 = 150;
-	int y1 = 250;
+
+	Crosshair cs_mobile;
+	Crosshair cs_fixed = Crosshair(150, 250, Color(0, 255, 0));
+	Crosshair cs0 = Crosshair(50, 400, Color(255, 255, 0));
+	Crosshair cs1 = Crosshair(500, 300, Color(0, 255, 255));
+
 	int vx = 0;
 	int vy = 1;
+
 	bool inhibitUp = false; 
 	bool inhibitDown = false;
 	bool inhibitLeft = false;
 	bool inhibitRight = false;
-	Color c = Color(255,255,255);
-	Color c1 = Color(0, 255, 0);
-	/********************************/
-	/*  User Variables              */
-	/********************************/
 };
