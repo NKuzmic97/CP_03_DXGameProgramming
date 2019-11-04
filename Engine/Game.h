@@ -1,5 +1,5 @@
-/******************************************************************************************
- *	Chili DirectX Framework Version 16.07.20											  *
+/****************************************************************************************** 
+ *	Chili DirectX Framework Version 16.07.20											  *	
  *	Game.h																				  *
  *	Copyright 2016 PlanetChili.net <http://www.planetchili.net>							  *
  *																						  *
@@ -24,37 +24,40 @@
 #include "Mouse.h"
 #include "Graphics.h"
 
-class Game {
+class Game
+{
 public:
-	Game(class MainWindow& wnd);
-	Game(const Game&) = delete;
-	Game& operator=(const Game&) = delete;
+	Game( class MainWindow& wnd );
+	Game( const Game& ) = delete;
+	Game& operator=( const Game& ) = delete;
 	void Go();
 private:
 	void ComposeFrame();
 	void UpdateModel();
 	/********************************/
 	/*  User Functions              */
-	void DrawBox(int x, int y, int r, int g, int b);
-	bool OverlapTest(int box0x, int box0y, int box1x, int box1y);
-	int ClampScreenX(int x);
-	int ClampScreenY(int y);
+	void DrawFace(int x, int y);
+	void DrawPoo(int x, int y);
+	void DrawGameOver(int x, int y);
+	void DrawTitleScreen(int x, int y);
+	int ClampScreenX(int x, int width);
+	int ClampScreenY(int y, int height);
+	bool IsColliding(int x0, int y0, int width0, int height0, int x1, int y1, int width1, int height1);
 	/********************************/
 private:
 	MainWindow& wnd;
 	Graphics gfx;
 	/********************************/
 	/*  User Variables              */
-	int x_fixed0 = 700;
-	int y_fixed0 = 200;
-	int x_fixed1 = 215;
-	int y_fixed1 = 200;
-	int x_fixed2 = 200;
-	int y_fixed2 = 220;
-	int x_fixed3 = 230;
-	int y_fixed3 = 220;
-	int x_mobile = 700;
-	int y_mobile = 200;
-	bool colliding = false;
+	int dudeX = 400, dudeY=300;
+	int dudeWidth = 20, dudeHeigth = 20;
+	int poo0X = 350, poo0Y = 150;
+	int poo1X = 100, poo1Y = 500;
+	int poo2X = 600, poo2Y = 400;
+	int pooWidth = 24, pooHeight = 24;
+	bool poo0IsEaten = false;
+	bool poo1IsEaten = false;
+	bool poo2IsEaten = false;
+	bool IsStarted = false;
 	/********************************/
 };
