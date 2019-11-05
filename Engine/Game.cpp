@@ -27,6 +27,21 @@ Game::Game( MainWindow& wnd )
 	wnd( wnd ),
 	gfx( wnd )
 {
+	PooXYRandomize();
+	PooMovementRandomize();
+}
+
+void Game::PooMovementRandomize() {
+	int directions[] = { -1,1 };
+	poo0vx = directions[rand() % (sizeof(directions) / sizeof(int))];
+	poo0vy = directions[rand() % (sizeof(directions) / sizeof(int))];
+	poo1vx = directions[rand() % (sizeof(directions) / sizeof(int))];
+	poo1vy = directions[rand() % (sizeof(directions) / sizeof(int))];
+	poo2vx = directions[rand() % (sizeof(directions) / sizeof(int))];
+	poo2vy = directions[rand() % (sizeof(directions) / sizeof(int))];
+}
+
+void Game::PooXYRandomize() {
 	std::random_device rd;
 	std::mt19937 rng(rd());
 	std::uniform_int_distribution<int> xDist(0, 770);
@@ -37,7 +52,6 @@ Game::Game( MainWindow& wnd )
 	poo1Y = yDist(rng);
 	poo2X = xDist(rng);
 	poo2Y = yDist(rng);
-
 }
 
 void Game::Go()
@@ -61,6 +75,11 @@ void Game::UpdateModel(){
 	dudeX = ClampScreenX(dudeX, dudeWidth);
 	dudeY = ClampScreenY(dudeY, dudeHeigth);
 
+	Poo0Movement();
+	Poo1Movement();
+	Poo2Movement();
+
+
 	if(IsColliding(dudeX, dudeY, dudeWidth, dudeHeigth, poo0X, poo0Y, pooWidth, pooHeight)) poo0IsEaten = true;
 
 	if (IsColliding(dudeX, dudeY, dudeWidth, dudeHeigth, poo1X, poo1Y, pooWidth, pooHeight)) poo1IsEaten = true;
@@ -71,6 +90,36 @@ void Game::UpdateModel(){
 		if (wnd.kbd.KeyIsPressed(VK_RETURN))
 			IsStarted = true;
 	}
+}
+
+void Game::Poo0Movement() {
+	poo0X += poo0vx;
+	poo0Y += poo0vy;
+
+	if (ClampScreenX(poo0X, pooWidth) != poo0X || !ClampScreenX(poo0X, pooWidth))
+		poo0vx *= -1;
+	if (ClampScreenY(poo0Y, pooHeight) != poo0Y || !ClampScreenY(poo0Y, pooHeight))
+		poo0vy *= -1;
+}
+
+void Game::Poo1Movement() {
+	poo1X += poo1vx;
+	poo1Y += poo1vy;
+
+	if (ClampScreenX(poo1X, pooWidth) != poo1X || !ClampScreenX(poo1X, pooWidth))
+		poo1vx *= -1;
+	if (ClampScreenY(poo1Y, pooHeight) != poo1Y || !ClampScreenY(poo1Y, pooHeight))
+		poo1vy *= -1;
+}
+
+void Game::Poo2Movement() {
+	poo2X += poo2vx;
+	poo2Y += poo2vy;
+
+	if (ClampScreenX(poo2X, pooWidth) != poo2X || !ClampScreenX(poo2X, pooWidth))
+		poo2vx *= -1;
+	if (ClampScreenY(poo2Y, pooHeight) != poo2Y || !ClampScreenY(poo2Y, pooHeight))
+		poo2vy *= -1;
 }
 
 void Game::DrawFace(int x, int y) {

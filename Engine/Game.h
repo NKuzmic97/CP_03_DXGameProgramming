@@ -28,12 +28,17 @@ class Game
 {
 public:
 	Game( class MainWindow& wnd );
+	void PooMovementRandomize();
+	void PooXYRandomize();
 	Game( const Game& ) = delete;
 	Game& operator=( const Game& ) = delete;
 	void Go();
 private:
 	void ComposeFrame();
 	void UpdateModel();
+	void Poo0Movement();
+	void Poo1Movement();
+	void Poo2Movement();
 	/********************************/
 	/*  User Functions              */
 	void DrawFace(int x, int y);
@@ -59,5 +64,11 @@ private:
 	bool poo1IsEaten = false;
 	bool poo2IsEaten = false;
 	bool IsStarted = false;
+	int poo0vx = 1;
+	int poo0vy = 1;
+	int poo1vx = 1;
+	int poo1vy = 1;
+	int poo2vx = 1;
+	int poo2vy = 1;
 	/********************************/
 };
