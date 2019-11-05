@@ -32,13 +32,13 @@ Game::Game( MainWindow& wnd )
 }
 
 void Game::PooMovementRandomize() {
-	int directions[] = { -1,1 };
-	poo0vx = directions[rand() % (sizeof(directions) / sizeof(int))];
-	poo0vy = directions[rand() % (sizeof(directions) / sizeof(int))];
-	poo1vx = directions[rand() % (sizeof(directions) / sizeof(int))];
-	poo1vy = directions[rand() % (sizeof(directions) / sizeof(int))];
-	poo2vx = directions[rand() % (sizeof(directions) / sizeof(int))];
-	poo2vy = directions[rand() % (sizeof(directions) / sizeof(int))];
+	int directions[] = {-1,1};
+	p0.vx = directions[rand() % (sizeof(directions) / sizeof(int))];
+	p0.vy = directions[rand() % (sizeof(directions) / sizeof(int))];
+	p1.vx = directions[rand() % (sizeof(directions) / sizeof(int))];
+	p1.vy = directions[rand() % (sizeof(directions) / sizeof(int))];
+	p2.vx = directions[rand() % (sizeof(directions) / sizeof(int))];
+	p2.vy = directions[rand() % (sizeof(directions) / sizeof(int))];
 }
 
 void Game::PooXYRandomize() {
@@ -46,12 +46,12 @@ void Game::PooXYRandomize() {
 	std::mt19937 rng(rd());
 	std::uniform_int_distribution<int> xDist(0, 770);
 	std::uniform_int_distribution<int> yDist(0, 570);
-	poo0X = xDist(rng);
-	poo0Y = yDist(rng);
-	poo1X = xDist(rng);
-	poo1Y = yDist(rng);
-	poo2X = xDist(rng);
-	poo2Y = yDist(rng);
+	p0.x = xDist(rng);
+	p0.y = yDist(rng);
+	p1.x = xDist(rng);
+	p1.y = yDist(rng);
+	p2.x = xDist(rng);
+	p2.y = yDist(rng);
 }
 
 void Game::Go()
@@ -63,6 +63,7 @@ void Game::Go()
 }
 
 void Game::UpdateModel(){
+
 	if(IsStarted){
 	if (wnd.kbd.KeyIsPressed(VK_UP))
 		dudeY -= 1;
@@ -75,16 +76,13 @@ void Game::UpdateModel(){
 	dudeX = ClampScreenX(dudeX, dudeWidth);
 	dudeY = ClampScreenY(dudeY, dudeHeigth);
 
-	Poo0Movement();
-	Poo1Movement();
-	Poo2Movement();
+	p0.Update();
+	p1.Update();
+	p2.Update();
 
-
-	if(IsColliding(dudeX, dudeY, dudeWidth, dudeHeigth, poo0X, poo0Y, pooWidth, pooHeight)) poo0IsEaten = true;
-
-	if (IsColliding(dudeX, dudeY, dudeWidth, dudeHeigth, poo1X, poo1Y, pooWidth, pooHeight)) poo1IsEaten = true;
-
-	if (IsColliding(dudeX, dudeY, dudeWidth, dudeHeigth, poo2X, poo2Y, pooWidth, pooHeight)) poo2IsEaten = true;
+	if(IsColliding(dudeX, dudeY, dudeWidth, dudeHeigth, p0.x, p0.y, Poo::width, Poo::height)) p0.IsEaten = true;
+	if (IsColliding(dudeX, dudeY, dudeWidth, dudeHeigth, p1.x, p1.y, Poo::width, Poo::height)) p1.IsEaten = true;
+	if (IsColliding(dudeX, dudeY, dudeWidth, dudeHeigth, p2.x, p2.y, Poo::width, Poo::height)) p2.IsEaten = true;
 }
 	else {
 		if (wnd.kbd.KeyIsPressed(VK_RETURN))
@@ -93,33 +91,33 @@ void Game::UpdateModel(){
 }
 
 void Game::Poo0Movement() {
-	poo0X += poo0vx;
-	poo0Y += poo0vy;
+	p0.x += p0.vx;
+	p0.y += p0.vy;
 
-	if (ClampScreenX(poo0X, pooWidth) != poo0X || !ClampScreenX(poo0X, pooWidth))
-		poo0vx *= -1;
-	if (ClampScreenY(poo0Y, pooHeight) != poo0Y || !ClampScreenY(poo0Y, pooHeight))
-		poo0vy *= -1;
+	if (ClampScreenX(p0.x, Poo::width) != p0.x || !ClampScreenX(p0.x, Poo::width))
+		p0.vx *= -1;
+	if (ClampScreenY(p0.y, Poo::height) != p0.y || !ClampScreenY(p0.y, Poo::height))
+		p0.vy *= -1;
 }
 
 void Game::Poo1Movement() {
-	poo1X += poo1vx;
-	poo1Y += poo1vy;
+	p1.x += p1.vx;
+	p1.y += p1.vy;
 
-	if (ClampScreenX(poo1X, pooWidth) != poo1X || !ClampScreenX(poo1X, pooWidth))
-		poo1vx *= -1;
-	if (ClampScreenY(poo1Y, pooHeight) != poo1Y || !ClampScreenY(poo1Y, pooHeight))
-		poo1vy *= -1;
+	if (ClampScreenX(p1.x, Poo::width) != p1.x || !ClampScreenX(p1.x, Poo::width))
+		p1.vx *= -1;
+	if (ClampScreenY(p1.y, Poo::height) != p1.y || !ClampScreenY(p1.y, Poo::height))
+		p1.vy *= -1;
 }
 
 void Game::Poo2Movement() {
-	poo2X += poo2vx;
-	poo2Y += poo2vy;
+	p2.x += p2.vx;
+	p2.y += p2.vy;
 
-	if (ClampScreenX(poo2X, pooWidth) != poo2X || !ClampScreenX(poo2X, pooWidth))
-		poo2vx *= -1;
-	if (ClampScreenY(poo2Y, pooHeight) != poo2Y || !ClampScreenY(poo2Y, pooHeight))
-		poo2vy *= -1;
+	if (ClampScreenX(p2.x, Poo::width) != p2.x || !ClampScreenX(p2.x, Poo::width))
+		p2.vx *= -1;
+	if (ClampScreenY(p2.y, Poo::height) != p2.y || !ClampScreenY(p2.y, Poo::height))
+		p2.vy *= -1;
 }
 
 void Game::DrawFace(int x, int y) {
@@ -29067,10 +29065,10 @@ void Game::ComposeFrame(){
 		DrawTitleScreen(325, 211);
 		return;
 	}
-	if (poo0IsEaten && poo1IsEaten && poo2IsEaten)
+	if (p0.IsEaten && p1.IsEaten && p2.IsEaten)
 		DrawGameOver(358, 268);
-	if(!poo0IsEaten)DrawPoo(poo0X, poo0Y);
-	if(!poo1IsEaten)DrawPoo(poo1X, poo1Y);
-	if(!poo2IsEaten)DrawPoo(poo2X, poo2Y);
+	if(!p0.IsEaten)DrawPoo(p0.x, p0.y);
+	if(!p1.IsEaten)DrawPoo(p1.x, p1.y);
+	if(!p2.IsEaten)DrawPoo(p2.x, p2.y);
 	DrawFace(dudeX, dudeY);
 }
