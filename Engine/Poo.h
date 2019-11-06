@@ -1,10 +1,10 @@
 #pragma once
-
 class Poo
 {
 public:
 	void Update();
-	void ProcessConsumption(int dudex, int dudey, int dudewidth, int dudeheight);
+	void Draw(class Graphics& gfx) const;
+	void ProcessConsumption(const class Dude& dude);
 	int x;
 	int y;
 	int vx;
