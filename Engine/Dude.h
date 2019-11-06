@@ -1,13 +1,11 @@
 #pragma once
-#include "MainWindow.h"
-class Dude {
-private:
-	MainWindow& wnd;
-public:
-	int x = 400, y = 300;
-	int width = 20, height = 20;
-public:
-	Dude(MainWindow& wnd);
-	void Update();
-};
 
+class Dude
+{
+public:
+	void ClampToScreen();
+	int x = 400;
+	int y = 300;
+	static constexpr int width = 20;
+	static constexpr int height = 20;
+};

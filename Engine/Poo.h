@@ -1,16 +1,15 @@
 #pragma once
-#include "Graphics.h"
 
-class Poo {
-private:
-	void MovementRandomize();
-	void PositionRandomize();
+class Poo
+{
 public:
-	Poo();
 	void Update();
-public:
-	static constexpr int width = 24, height = 24;
-	int x, y;
-	int vx, vy;
-	bool IsEaten = false;
+	void ProcessConsumption(int dudex, int dudey, int dudewidth, int dudeheight);
+	int x;
+	int y;
+	int vx;
+	int vy;
+	static constexpr int width = 24;
+	static constexpr int height = 24;
+	bool isEaten = false;
 };
