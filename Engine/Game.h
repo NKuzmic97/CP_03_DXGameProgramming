@@ -23,6 +23,7 @@
 #include "Keyboard.h"
 #include "Mouse.h"
 #include "Graphics.h"
+#include "Renderer.h"
 #include "Dude.h"
 #include "Poo.h"
 
@@ -36,25 +37,12 @@ public:
 private:
 	void ComposeFrame();
 	void UpdateModel();
-	void Poo0Movement();
-	void Poo1Movement();
-	void Poo2Movement();
-	/********************************/
-	/*  User Functions              */
-	void DrawFace(int x, int y);
-	void DrawGameOver(int x, int y);
-	void DrawTitleScreen(int x, int y);
-	int ClampScreenX(int x, int width);
-	int ClampScreenY(int y, int height);
-	bool IsColliding(int x0, int y0, int width0, int height0, int x1, int y1, int width1, int height1);
-	/********************************/
+	bool IsColliding(const Dude& dude, const Poo& poo);
 private:
 	MainWindow& wnd;
 	Graphics gfx;
-	/********************************/
-	/*  User Variables              */
-	bool IsStarted = false;
+	Renderer renderer;
 	Dude d0;
 	Poo p0, p1, p2;
-	/********************************/
+	bool IsStarted = false;
 };
