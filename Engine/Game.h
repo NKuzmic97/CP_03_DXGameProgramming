@@ -23,14 +23,13 @@
 #include "Keyboard.h"
 #include "Mouse.h"
 #include "Graphics.h"
+#include "Dude.h"
 #include "Poo.h"
 
 class Game
 {
 public:
 	Game( class MainWindow& wnd );
-	void PooMovementRandomize();
-	void PooXYRandomize();
 	Game( const Game& ) = delete;
 	Game& operator=( const Game& ) = delete;
 	void Go();
@@ -43,7 +42,6 @@ private:
 	/********************************/
 	/*  User Functions              */
 	void DrawFace(int x, int y);
-	void DrawPoo(int x, int y);
 	void DrawGameOver(int x, int y);
 	void DrawTitleScreen(int x, int y);
 	int ClampScreenX(int x, int width);
@@ -55,9 +53,8 @@ private:
 	Graphics gfx;
 	/********************************/
 	/*  User Variables              */
-	int dudeX = 400, dudeY=300;
-	int dudeWidth = 20, dudeHeigth = 20;
 	bool IsStarted = false;
+	Dude d0;
 	Poo p0, p1, p2;
 	/********************************/
 };
