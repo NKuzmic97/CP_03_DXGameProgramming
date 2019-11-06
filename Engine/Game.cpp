@@ -36,30 +36,18 @@ void Game::Go()
 	gfx.EndFrame();
 }
 
-void Game::UpdateModel()
-{
+void Game::UpdateModel(){
+	gfx.DrawRect(x0, y0, x1, y1, Colors::Magenta);
 }
 
 void Game::ComposeFrame(){
-	static int x = 100;
-	static int y = 100;
-	static int width = 100;
-	static int height = 100;
+	if (wnd.kbd.KeyIsPressed(VK_UP)) y0--;
+	else if (wnd.kbd.KeyIsPressed(VK_DOWN)) y0++;
+	if (wnd.kbd.KeyIsPressed(VK_LEFT)) x0--;
+	else if (wnd.kbd.KeyIsPressed(VK_RIGHT)) x0++;
 
-	if (wnd.kbd.KeyIsPressed(VK_UP)) y--;
-	else if (wnd.kbd.KeyIsPressed(VK_DOWN)) y++;
-	if (wnd.kbd.KeyIsPressed(VK_LEFT)) x--;
-	else if (wnd.kbd.KeyIsPressed(VK_RIGHT)) x++;
-
-	if (wnd.kbd.KeyIsPressed('A')) width--;
-	else if (wnd.kbd.KeyIsPressed('D')) width++;
-	if (wnd.kbd.KeyIsPressed('W')) height--;
-	else if (wnd.kbd.KeyIsPressed('S')) height++;
-	
-
-	for (int i = x; i < x+width; i++) {
-		for (int j = y; j < y+height; j++) {
-			gfx.PutPixel(i, j, 255, 255, 255);
-		}
+	if (wnd.mouse.LeftIsPressed()) {
+		x1 = wnd.mouse.GetPosX();
+		y1 = wnd.mouse.GetPosY();
 	}
 }
