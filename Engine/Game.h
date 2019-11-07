@@ -52,9 +52,7 @@ private:
 	std::uniform_int_distribution<int> xDist;
 	std::uniform_int_distribution<int> yDist;
 	Dude dude;
-	Poo poo0;
-	Poo poo1;
-	Poo poo2;
+	Poo poo0, poo1, poo2, poo3, poo4, poo5, poo6, poo7, poo8;
 	bool isStarted = false;
 	/********************************/
 };

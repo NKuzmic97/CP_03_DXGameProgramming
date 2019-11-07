@@ -8,11 +8,11 @@ struct Vector2 {
 class Dude
 {
 public:
-	void MoveLeft();
-	void MoveRight();
-	void MoveUp();
-	void MoveDown();
-	Dude(int x, int y);
+	void Update(const class Keyboard& kbd);
+
+	inline Dude::Dude(int x, int y)
+		:position(x, y) {}
+
 	void ClampToScreen();
 	void Draw(class Graphics& gfx) const;
 	Vector2 GetPosition() const;
@@ -20,6 +20,7 @@ public:
 	int GetHeight() const;
 private:
 	Vector2 position;
+	static constexpr int speed = 5;
 	static constexpr int width = 20;
 	static constexpr int height = 20;
 };

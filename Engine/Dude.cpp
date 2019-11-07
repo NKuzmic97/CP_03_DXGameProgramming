@@ -1,25 +1,19 @@
 #include "Dude.h"
 #include "Graphics.h"
+#include "Keyboard.h"
 
-void Dude::MoveLeft() {
-	position.x--;
+void Dude::Update(const Keyboard& kbd) {
+	if (kbd.KeyIsPressed(VK_RIGHT))
+	position.x += speed;
+	if (kbd.KeyIsPressed(VK_LEFT))
+		position.x -= speed;
+	if (kbd.KeyIsPressed(VK_DOWN))
+		position.y += speed;
+	if (kbd.KeyIsPressed(VK_UP)) 
+		position.y -= speed;
 }
 
-void Dude::MoveRight() {
-	position.x++;
-}
 
-void Dude::MoveUp() {
-	position.y--;
-}
-
-void Dude::MoveDown() {
-	position.y++;
-}
-
-Dude::Dude(int x, int y)
-	:position(x,y) {
-}
 
 void Dude::ClampToScreen()
 {
