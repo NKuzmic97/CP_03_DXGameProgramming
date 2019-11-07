@@ -25,25 +25,15 @@
 Game::Game( MainWindow& wnd )
 	:
 	wnd( wnd ),
-	gfx( wnd )
+	gfx( wnd ),
+	dude(400,300),
+	rng(rd()),
+	xDist(0,770),
+	yDist(0,570),
+	poo0(xDist(rng), yDist(rng),   1,  1),
+	poo1(xDist(rng), yDist(rng),  -1,  1),
+	poo2(xDist(rng), yDist(rng),   1, -1)
 {
-	std::random_device rd;
-	std::mt19937 rng( rd() );
-	std::uniform_int_distribution<int> xDist( 0,770 );
-	std::uniform_int_distribution<int> yDist( 0,570 );
-	poo0.x = xDist( rng );
-	poo0.y = yDist( rng );
-	poo1.x = xDist( rng );
-	poo1.y = yDist( rng );
-	poo2.x = xDist( rng );
-	poo2.y = yDist( rng );
-
-	poo0.vx = 1;
-	poo0.vy = 1;
-	poo1.vx = -1;
-	poo1.vy = 1;
-	poo2.vx = 1;
-	poo2.vy = -1;
 }
 
 void Game::Go()
@@ -60,19 +50,19 @@ void Game::UpdateModel()
 	{
 		if( wnd.kbd.KeyIsPressed( VK_RIGHT ) )
 		{
-			dude.x += 1;
+			dude.MoveRight();
 		}
 		if( wnd.kbd.KeyIsPressed( VK_LEFT ) )
 		{
-			dude.x -= 1;
+			dude.MoveLeft();
 		}
 		if( wnd.kbd.KeyIsPressed( VK_DOWN ) )
 		{
-			dude.y += 1;
+			dude.MoveDown();
 		}
 		if( wnd.kbd.KeyIsPressed( VK_UP ) )
 		{
-			dude.y -= 1;
+			dude.MoveUp();
 		}
 
 		dude.ClampToScreen();
@@ -28442,28 +28432,26 @@ void Game::DrawTitleScreen( int x,int y )
 
 void Game::ComposeFrame()
 {
-	//gfx.DrawRect(50, 150, 70, 100, Colors::White);
-	gfx.DrawRect(200, 100, 100);
 	if( !isStarted )
 	{
 		DrawTitleScreen( 325,211 );
 	}
 	else
 	{
-		if( poo0.isEaten && poo1.isEaten && poo2.isEaten )
+		if( poo0.IsEaten() && poo1.IsEaten() && poo2.IsEaten() )
 		{
 			DrawGameOver( 358,268 );
 		}
 		dude.Draw(gfx);
-		if( !poo0.isEaten )
+		if( !poo0.IsEaten() )
 		{
 			poo0.Draw(gfx);
 		}
-		if( !poo1.isEaten )
+		if( !poo1.IsEaten() )
 		{
 			poo1.Draw(gfx);
 		}
-		if( !poo2.isEaten )
+		if( !poo2.IsEaten() )
 		{
 			poo2.Draw(gfx);
 		}
