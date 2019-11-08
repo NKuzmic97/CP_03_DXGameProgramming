@@ -1,16 +1,20 @@
 #include "Poo.h"
 #include "Graphics.h"
 #include "Dude.h"
+#include <assert.h>
 
-Poo::Poo(int in_x, int in_y, int in_vx, int in_vy) {
+void Poo::Init(int in_x, int in_y, int in_vx, int in_vy) {
+	assert(initalized == false);
 	x = in_x;
 	y = in_y;
 	vx = in_vx;
 	vy = in_vy;
+	initalized = true;
 }
 
 void Poo::Update()
 {
+	assert(initalized);
 	x += vx;
 	y += vy;
 
@@ -40,6 +44,7 @@ void Poo::Update()
 }
 
 void Poo::Draw(Graphics& gfx) const {
+		assert(initalized);
 		gfx.PutPixel(14 + x, 0 + y, 138, 77, 0);
 		gfx.PutPixel(7 + x, 1 + y, 138, 77, 0);
 		gfx.PutPixel(13 + x, 1 + y, 138, 77, 0);
@@ -275,6 +280,7 @@ void Poo::Draw(Graphics& gfx) const {
 
 void Poo::ProcessConsumption(const Dude& dude)
 {
+	assert(initalized);
 	const int duderight = dude.GetPosition().x + dude.GetWidth();
 	const int dudebottom = dude.GetPosition().y + dude.GetHeight();
 	const int pooright = x + width;
@@ -290,5 +296,6 @@ void Poo::ProcessConsumption(const Dude& dude)
 }
 
 bool Poo::IsEaten() const {
+	assert(initalized);
 	return isEaten;
 }

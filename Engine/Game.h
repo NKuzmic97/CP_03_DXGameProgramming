@@ -52,7 +52,8 @@ private:
 	std::uniform_int_distribution<int> xDist;
 	std::uniform_int_distribution<int> yDist;
 	Dude dude;
-	Poo poo0, poo1, poo2, poo3, poo4, poo5, poo6, poo7, poo8;
+	static constexpr int nPoo = 1000;
+	Poo poos[nPoo];
 	bool isStarted = false;
 	/********************************/
 };
