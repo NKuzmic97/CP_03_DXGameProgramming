@@ -315,8 +315,8 @@ void Graphics::DrawRect(int x0, int x1, int y0, int y1, Color c) {
 	}
 }
 
-void Graphics::DrawRect(int x0,int y0, int width, int height) {
-	DrawRect(x0, x0+width,y0, y0 + height, Colors::White);
+void Graphics::DrawRect(Color c,int x0,int y0, int width, int height) {
+	DrawRect(x0, x0+width,y0, y0 + height, c);
 }
 
 void Graphics::PutPixel( int x,int y,Color c )

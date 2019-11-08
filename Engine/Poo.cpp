@@ -278,7 +278,7 @@ void Poo::Draw(Graphics& gfx) const {
 		gfx.PutPixel(6 + x, 23 + y, 51, 28, 0);
 }
 
-void Poo::ProcessConsumption(const Dude& dude)
+bool Poo::TestCollision(const Dude& dude) const
 {
 	assert(initalized);
 	const int duderight = dude.GetPosition().x + dude.GetWidth();
@@ -286,16 +286,8 @@ void Poo::ProcessConsumption(const Dude& dude)
 	const int pooright = x + width;
 	const int poobottom = y + height;
 
-	if( duderight >= x &&
+	return (duderight >= x &&
 		dude.GetPosition().x <= pooright &&
 		dudebottom >= y &&
-		dude.GetPosition().y <= poobottom )
-	{
-		isEaten = true;
-	}
-}
-
-bool Poo::IsEaten() const {
-	assert(initalized);
-	return isEaten;
+		dude.GetPosition().y <= poobottom);
 }

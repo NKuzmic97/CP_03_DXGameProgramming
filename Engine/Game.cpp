@@ -20,6 +20,7 @@
  ******************************************************************************************/
 #include "MainWindow.h"
 #include "Game.h"
+#include "Vector2.h"
 #include <random>
 
 Game::Game( MainWindow& wnd )
@@ -29,31 +30,38 @@ Game::Game( MainWindow& wnd )
 	dude(400,300),
 	rng(rd()),
 	xDist(0,770),
-	yDist(0,570)
+	yDist(0,570),
+	goal(xDist(rng),yDist(rng)),
+	meter(20,20)
 {
 	std::uniform_int_distribution<int> vDist(-1, 1);
-	for (int i = 0; i < nPoo - 1; i++)
+	for (int i = 0; i < nPoo ; i++)
 		poos[i].Init(xDist(rng), yDist(rng), vDist(rng), vDist(rng));
 }
 
-void Game::Go()
-{
+void Game::Go(){
 	gfx.BeginFrame();	
 	UpdateModel();
 	ComposeFrame();
 	gfx.EndFrame();
 }
 
-void Game::UpdateModel()
-{
-	if( isStarted )
-	{
+void Game::UpdateModel() {
+	goal.UpdateColor();
+	if(isStarted && !isGameOver){
 		dude.Update(wnd.kbd);
 		dude.ClampToScreen();
 
 		for (int i = 0; i < nPoo; i++) {
 			poos[i].Update();
-			poos[i].ProcessConsumption(dude);
+
+			if (poos[i].TestCollision(dude))
+				isGameOver = true;
+		}
+
+		if (goal.TestCollision(dude)){
+			goal.Respawn(xDist(rng), yDist(rng));
+			meter.IncreaseLevel();
 		}
 	}
 	else
@@ -28408,22 +28416,20 @@ void Game::DrawTitleScreen( int x,int y )
 }
 
 void Game::ComposeFrame() {
-	poos[0].Init(0, 0, 0, 0);
 	if (!isStarted)
 		DrawTitleScreen(325, 211);
 
 	else {
-		bool allEaten = true;
+		goal.Draw(gfx);
 
-		for (int i = 0; i < nPoo; i++)
-			allEaten = allEaten && poos[i].IsEaten();
-
-		if (allEaten)
+		if (isGameOver)
 			DrawGameOver(358, 268);
 
 		dude.Draw(gfx);
 
 		for (int i = 0; i < nPoo; i++)
-			if(!poos[i].IsEaten()) poos[i].Draw(gfx);
+			poos[i].Draw(gfx);
+		meter.Draw(gfx);
 	}
 }
+

@@ -1,12 +1,7 @@
 #pragma once
+#include "Vector2.h"
 
-struct Vector2 {
-	Vector2(int x, int y) :x(x), y(y) {};
-	int x, y;
-};
-
-class Dude
-{
+class Dude {
 public:
 	void Update(const class Keyboard& kbd);
 
@@ -20,7 +15,7 @@ public:
 	int GetHeight() const;
 private:
 	Vector2 position;
-	static constexpr int speed = 5;
+	static constexpr int speed = 2;
 	static constexpr int width = 20;
 	static constexpr int height = 20;
 };

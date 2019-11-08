@@ -26,9 +26,10 @@
 #include "Poo.h"
 #include "Dude.h"
 #include <random>
+#include "Goal.h"
+#include "Meter.h"
 
-class Game
-{
+class Game{
 public:
 	Game( class MainWindow& wnd );
 	Game( const Game& ) = delete;
@@ -52,8 +53,11 @@ private:
 	std::uniform_int_distribution<int> xDist;
 	std::uniform_int_distribution<int> yDist;
 	Dude dude;
-	static constexpr int nPoo = 1000;
+	Goal goal;
+	static constexpr int nPoo = 20;
 	Poo poos[nPoo];
 	bool isStarted = false;
+	bool isGameOver = false;
+	Meter meter;
 	/********************************/
 };
