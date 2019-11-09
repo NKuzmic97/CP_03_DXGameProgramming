@@ -23,13 +23,11 @@
 #include "Keyboard.h"
 #include "Mouse.h"
 #include "Graphics.h"
-#include "Poo.h"
-#include "Dude.h"
+#include "Board.h"
 #include <random>
-#include "Goal.h"
-#include "Meter.h"
 
-class Game{
+class Game
+{
 public:
 	Game( class MainWindow& wnd );
 	Game( const Game& ) = delete;
@@ -40,24 +38,12 @@ private:
 	void UpdateModel();
 	/********************************/
 	/*  User Functions              */
-	void DrawGameOver( int x,int y );
-	void DrawTitleScreen( int x,int y );
 	/********************************/
 private:
 	MainWindow& wnd;
 	Graphics gfx;
-	/********************************/
 	/*  User Variables              */
-	std::random_device rd;
+	Board brd;
 	std::mt19937 rng;
-	std::uniform_int_distribution<int> xDist;
-	std::uniform_int_distribution<int> yDist;
-	Dude dude;
-	Goal goal;
-	static constexpr int nPoo = 20;
-	Poo poos[nPoo];
-	bool isStarted = false;
-	bool isGameOver = false;
-	Meter meter;
 	/********************************/
 };
