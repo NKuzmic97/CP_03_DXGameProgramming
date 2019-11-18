@@ -8,8 +8,9 @@ public:
 	void DrawCell(const Location& loc, Color c);
 	static int GetGridWidth();
 	static int GetGridHeight();
+	bool IsInsideBoard(const Location& loc) const;
 private:
 	static constexpr int dimension = 20;
-	static constexpr int width = 10, height = 10;
+	static constexpr int width = 25, height = 25;
 	Graphics& gfx;
 };

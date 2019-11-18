@@ -20,13 +20,16 @@
  ******************************************************************************************/
 #include "MainWindow.h"
 #include "Game.h"
+#include "SpriteCodex.h"
 
 Game::Game(MainWindow& wnd)
 	:
 	wnd(wnd),
 	gfx(wnd),
 	brd(gfx),
-	rng(std::random_device()())
+	rng(std::random_device()()),
+	snake({2,2}),
+	goal(rng,brd,snake)
 {
 }
 
@@ -40,15 +43,43 @@ void Game::Go()
 
 void Game::UpdateModel()
 {
+	if(!gameIsOver){
+	if (wnd.kbd.KeyIsPressed(VK_UP))
+		delta_loc = { 0,-1 };
+	else if (wnd.kbd.KeyIsPressed(VK_DOWN))
+		delta_loc = { 0,1 };
+	else if (wnd.kbd.KeyIsPressed(VK_LEFT))
+		delta_loc = { -1,0 };
+	else if (wnd.kbd.KeyIsPressed(VK_RIGHT))
+		delta_loc = { 1,0 };
+
+	++snakeMoveCounter;
+	if (snakeMoveCounter >= snakeMovePeriod) {
+		snakeMoveCounter = 0;
+
+		const Location next = snake.GetNextHeadLocation(delta_loc);
+
+		if (!brd.IsInsideBoard(next) ||
+			snake.IsInTileExceptEnd(next))
+			gameIsOver = true;
+		else{
+			const bool eating = next == goal.GetLocation();
+			if (eating)
+				snake.Grow();
+
+		snake.MoveBy(delta_loc);
+
+		if (eating)
+			goal.Respawn(rng, brd, snake);
+	}
+	}
+	}
 }
 
 void Game::ComposeFrame(){
-	std::uniform_int_distribution<int> colorDist(0, 255);
-	for (int y = 0; y < brd.GetGridHeight(); y++) {
-		for (int x = 0; x < brd.GetGridWidth(); x++) {
-			Location loc = { y,x };
-			Color c(colorDist(rng), colorDist(rng), colorDist(rng));
-			brd.DrawCell(loc, c);
-		}
-	}
+	snake.Draw(brd);
+	goal.Draw(brd);
+
+	if (gameIsOver)
+		SpriteCodex::DrawGameOver(200, 200, gfx);
 }

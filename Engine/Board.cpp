@@ -14,9 +14,14 @@ void Board::DrawCell(const Location &loc, Color c) {
 }
 
 int Board::GetGridWidth() {
-	return height;
+	return width;
 }
 
 int Board::GetGridHeight() {
-	return width;
+	return height;
+}
+
+bool Board::IsInsideBoard(const Location & loc) const {
+	return loc.x >= 0 && loc.x < width &&
+		loc.y >= 0 && loc.y < height;
 }
