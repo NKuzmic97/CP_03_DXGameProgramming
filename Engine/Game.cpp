@@ -43,7 +43,45 @@ void Game::Go()
 
 void Game::UpdateModel()
 {
-	if(!gameIsOver){
+	static int FrameCounter = 0;
+	FrameCounter++;
+
+	if (FrameCounter >= FramesPerSecond) {
+		seconds++;
+		FrameCounter = 0;
+	}
+
+	if (seconds % 10 == 0 && seconds != 0 && snakeMovePeriod > 4) {
+		snakeMovePeriod -= 3;
+		seconds = 0;
+	}
+
+	if (wnd.kbd.KeyIsPressed(VK_RETURN))
+		gameIsStarted = true;
+
+	if(!gameIsOver && gameIsStarted){
+
+		++snakeMoveCounter;
+		if (snakeMoveCounter >= snakeMovePeriod) {
+			snakeMoveCounter = 0;
+
+			const Location next = snake.GetNextHeadLocation(delta_loc);
+
+			if (!brd.IsInsideBoard(next) &&
+				snake.IsInTileExceptEnd(next))
+				gameIsOver = true;
+			else {
+				const bool eating = next == goal.GetLocation();
+				if (eating)
+					snake.Grow();
+
+				snake.MoveBy(delta_loc);
+
+				if (eating)
+					goal.Respawn(rng, brd, snake);
+			}
+		}
+
 	if (wnd.kbd.KeyIsPressed(VK_UP))
 		delta_loc = { 0,-1 };
 	else if (wnd.kbd.KeyIsPressed(VK_DOWN))
@@ -53,33 +91,26 @@ void Game::UpdateModel()
 	else if (wnd.kbd.KeyIsPressed(VK_RIGHT))
 		delta_loc = { 1,0 };
 
-	++snakeMoveCounter;
-	if (snakeMoveCounter >= snakeMovePeriod) {
-		snakeMoveCounter = 0;
-
-		const Location next = snake.GetNextHeadLocation(delta_loc);
-
-		if (!brd.IsInsideBoard(next) ||
-			snake.IsInTileExceptEnd(next))
-			gameIsOver = true;
-		else{
-			const bool eating = next == goal.GetLocation();
-			if (eating)
-				snake.Grow();
-
-		snake.MoveBy(delta_loc);
-
-		if (eating)
-			goal.Respawn(rng, brd, snake);
-	}
-	}
+	if (wnd.kbd.KeyIsPressed('A'))
+		brd.MoveBorderLeft();
+	else if (wnd.kbd.KeyIsPressed('D'))
+		brd.MoveBorderRight();
+	if (wnd.kbd.KeyIsPressed('W'))
+		brd.MoveBorderUp();
+	else if (wnd.kbd.KeyIsPressed('S'))
+		brd.MoveBorderDown();
 	}
 }
 
 void Game::ComposeFrame(){
+	if(gameIsStarted){
 	snake.Draw(brd);
 	goal.Draw(brd);
 
 	if (gameIsOver)
-		SpriteCodex::DrawGameOver(200, 200, gfx);
+		SpriteCodex::DrawGameOver(Graphics::ScreenWidth/2, Graphics::ScreenHeight/2 - 70, gfx);
+
+	}
+	else
+		SpriteCodex::DrawTitle(Graphics::ScreenWidth / 2 - 120, Graphics::ScreenHeight / 2 - 100, gfx);
 }

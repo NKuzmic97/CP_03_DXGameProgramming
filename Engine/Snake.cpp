@@ -52,7 +52,8 @@ void Snake::Segment::InitHead(const Location & in_loc) {
 }
 
 void Snake::Segment::InitBody() {
-	c = Snake::bodyColor;
+	int randomColor = 127 + rand() % 128;
+	c = Color(0,randomColor,0);
 }
 
 void Snake::Segment::Follow(const Segment& next) {
@@ -60,7 +61,7 @@ void Snake::Segment::Follow(const Segment& next) {
 }
 
 void Snake::Segment::MoveBy(const Location & delta_loc) {
-	assert(abs(delta_loc.x) + abs(delta_loc.y) == 1);
+	//assert(abs(delta_loc.x) + abs(delta_loc.y) == 1);
 	loc.Add(delta_loc);
 }
 
