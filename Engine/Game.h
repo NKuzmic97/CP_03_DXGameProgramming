@@ -23,9 +23,11 @@
 #include "Keyboard.h"
 #include "Mouse.h"
 #include "Graphics.h"
-#include "Board.h"
-#include "Snake.h"
+#include "Poo.h"
+#include "Dude.h"
 #include "Goal.h"
+#include "Meter.h"
+#include "SoundEffect.h"
 #include <random>
 
 class Game
@@ -40,21 +42,28 @@ private:
 	void UpdateModel();
 	/********************************/
 	/*  User Functions              */
+	void DrawGameOver( int x,int y );
+	void DrawTitleScreen( int x,int y );
 	/********************************/
 private:
 	MainWindow& wnd;
 	Graphics gfx;
+	/********************************/
 	/*  User Variables              */
+	std::random_device rd;
 	std::mt19937 rng;
-	Board brd;
-	Snake snake;
+	std::uniform_int_distribution<int> xDist;
+	std::uniform_int_distribution<int> yDist;
+	Dude dude;
 	Goal goal;
-	Location delta_loc = { 1,0 };
-	int snakeMovePeriod = 20;
-	int snakeMoveCounter = 0;
-	bool gameIsOver = false;
-	bool gameIsStarted = false;
-	static constexpr int FramesPerSecond = 60;
-	int seconds = 0;
+	Meter meter;
+	static constexpr int nPoo = 10;
+	Poo poos[nPoo];
+	bool isStarted = false;
+	bool isGameOver = false;
+	SoundEffect pickup = SoundEffect( { L"Sounds\\coin.wav" } );
+	Sound title = Sound( L"Sounds\\title.wav" );
+	SoundEffect fart = SoundEffect( 
+		{ L"Sounds\\fart1.wav",L"Sounds\\fart2.wav" } );
 	/********************************/
 };

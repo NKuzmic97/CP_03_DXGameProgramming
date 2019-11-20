@@ -1,21 +1,22 @@
 #pragma once
-#include "Vector2.h"
 
-class Dude {
+#include "Graphics.h"
+#include "Keyboard.h"
+
+class Dude
+{
 public:
-	void Update(const class Keyboard& kbd);
-
-	inline Dude::Dude(int x, int y)
-		:position(x, y) {}
-
 	void ClampToScreen();
-	void Draw(class Graphics& gfx) const;
-	Vector2 GetPosition() const;
+	void Draw( Graphics& gfx ) const;
+	void Update( const Keyboard& kbd );
+	int GetX() const;
+	int GetY() const;
 	int GetWidth() const;
 	int GetHeight() const;
 private:
-	Vector2 position;
-	static constexpr int speed = 2;
+	int x = 400;
+	int y = 300;
+	static constexpr int speed = 1;
 	static constexpr int width = 20;
 	static constexpr int height = 20;
 };

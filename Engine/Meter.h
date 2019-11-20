@@ -1,22 +1,32 @@
 #pragma once
+
 #include "Graphics.h"
 
-class Meter {
+class Meter
+{
 public:
-	Meter(int x,int y):x(x),y(y){}
-	void IncreaseLevel() {
+	Meter( int x,int y )
+		:
+		x( x ),
+		y( y )
+	{}
+	void IncreaseLevel()
+	{
 		++level;
 	}
-	int GetLevel() const {
+	int GetLevel() const
+	{
 		return level;
 	}
-	void Draw(Graphics& gfx) const {
-		gfx.DrawRect(c,x,y,level*scale,girth);
+	void Draw( Graphics& gfx ) const
+	{
+		gfx.DrawRectDim( x,y,level * scale,girth,c );
 	}
 private:
 	static constexpr Color c = Colors::Blue;
 	static constexpr int girth = 12;
 	static constexpr int scale = 4;
 	int level = 0;
-	int x, y;
+	int x;
+	int y;
 };
