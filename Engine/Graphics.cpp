@@ -261,6 +261,29 @@ void Graphics::DrawCircle(int x, int y, int radius, Color c) {
 	}
 }
 
+void Graphics::DrawDonut(int x, int y, int outerRadius,int innerRadius, Color c) {
+	const int x_start = x - outerRadius;
+	const int x_end = x + outerRadius;
+	const int y_start = y - outerRadius;
+	const int y_end = y + outerRadius;
+
+	const int xi_start = x - innerRadius;
+	const int xi_end = x + innerRadius;
+	const int yi_start = y - innerRadius;
+	const int yi_end = y + innerRadius;
+
+	for (int yc = y_start; yc < y_end; yc++) {
+		for (int xc = x_start; xc < x_end; xc++) {
+			int a = yc - y;
+			int b = xc - x;
+			int distancePow2 = pow(a, 2) + pow(b, 2);
+			if (distancePow2 <= outerRadius * outerRadius && distancePow2 >= innerRadius * innerRadius) {
+				PutPixel(xc, yc, c);
+			}
+		}
+	}
+}
+
 Graphics::~Graphics()
 {
 	// free sysbuffer memory (aligned free)
