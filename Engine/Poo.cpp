@@ -2,7 +2,7 @@
 #include "Graphics.h"
 #include <assert.h>
 
-void Poo::Init( int in_x,int in_y,int in_vx,int in_vy )
+void Poo::Init( float in_x, float in_y,float in_vx,float in_vy )
 {
 	assert( initialized == false );
 	x = in_x;
@@ -18,27 +18,27 @@ void Poo::Update()
 	x += vx;
 	y += vy;
 
-	const int right = x + width;
+	const float right = x + width;
 	if( x < 0 )
 	{
 		x = 0;
 		vx = -vx;
 	}
-	else if( right >= Graphics::ScreenWidth )
+	else if( right >= float(Graphics::ScreenWidth) )
 	{
-		x = (Graphics::ScreenWidth - 1) - width;
+		x = float (Graphics::ScreenWidth - 1) - width;
 		vx = -vx;
 	}
 
-	const int bottom = y + height;
+	const float bottom = y + height;
 	if( y < 0 )
 	{
 		y = 0;
 		vy = -vy;
 	}
-	else if( bottom >= Graphics::ScreenHeight )
+	else if( bottom >= float(Graphics::ScreenHeight) )
 	{
-		y = (Graphics::ScreenHeight - 1) - height;
+		y = float(Graphics::ScreenHeight - 1) - height;
 		vy = -vy;
 	}
 }
@@ -46,10 +46,10 @@ void Poo::Update()
 bool Poo::TestCollision( const Dude& dude ) const
 {
 	assert( initialized == true );
-	const int duderight = dude.GetX() + dude.GetWidth();
-	const int dudebottom = dude.GetY() + dude.GetHeight();
-	const int pooright = x + width;
-	const int poobottom = y + height;
+	const float duderight = dude.GetX() + dude.GetWidth();
+	const float dudebottom = dude.GetY() + dude.GetHeight();
+	const float pooright = x + width;
+	const float poobottom = y + height;
 
 	return
 		duderight >= x &&
@@ -61,6 +61,8 @@ bool Poo::TestCollision( const Dude& dude ) const
 void Poo::Draw( Graphics& gfx ) const
 {
 	assert( initialized == true );
+	const int x = int(this->x);
+	const int y = int(this->y);
 	gfx.PutPixel( 14 + x,0 + y,138,77,0 );
 	gfx.PutPixel( 7 + x,1 + y,138,77,0 );
 	gfx.PutPixel( 13 + x,1 + y,138,77,0 );

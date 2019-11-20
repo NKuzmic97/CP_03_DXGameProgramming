@@ -3,29 +3,32 @@
 
 void Dude::ClampToScreen()
 {
-	const int right = x + width;
+	const float right = x + width;
 	if( x < 0 )
 	{
 		x = 0;
 	}
-	else if( right >= Graphics::ScreenWidth )
+	else if( right >= float(Graphics::ScreenWidth) )
 	{
-		x = (Graphics::ScreenWidth - 1) - width;
+		x = (float)(Graphics::ScreenWidth - 1) - width;
 	}
 
-	const int bottom = y + height;
+	const float bottom = y + height;
 	if( y < 0 )
 	{
 		y = 0;
 	}
-	else if( bottom >= Graphics::ScreenHeight )
+	else if( bottom >= float(Graphics::ScreenHeight) )
 	{
-		y = (Graphics::ScreenHeight - 1) - height;
+		y = float(Graphics::ScreenHeight - 1) - height;
 	}
 }
 
 void Dude::Draw( Graphics& gfx ) const
 {
+	const int x = int(this->x);
+	const int y = int(this->y);
+
 	gfx.PutPixel( 7 + x,0 + y,0,0,0 );
 	gfx.PutPixel( 8 + x,0 + y,0,0,0 );
 	gfx.PutPixel( 9 + x,0 + y,0,0,0 );
@@ -364,22 +367,22 @@ void Dude::Update( const Keyboard & kbd )
 	}
 }
 
-int Dude::GetX() const
+float Dude::GetX() const
 {
 	return x;
 }
 
-int Dude::GetY() const
+float Dude::GetY() const
 {
 	return y;
 }
 
-int Dude::GetWidth() const
+float Dude::GetWidth() const
 {
 	return width;
 }
 
-int Dude::GetHeight() const
+float Dude::GetHeight() const
 {
 	return height;
 }
