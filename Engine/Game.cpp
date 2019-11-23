@@ -32,7 +32,7 @@ Game::Game( MainWindow& wnd )
 	goal( xDist( rng ),yDist( rng ) ),
 	meter( 20,20 )
 {
-	std::uniform_real_distribution<float> vDist( -2.5f , 2.5f );
+	std::uniform_real_distribution<float> vDist( -2.5f * 60.0f , 2.5f * 60.0f );
 	for( int i = 0; i < nPoo; ++i )
 	{
 		poos[i].Init( xDist( rng ),yDist( rng ),vDist(rng),vDist(rng));
@@ -50,15 +50,17 @@ void Game::Go()
 
 void Game::UpdateModel()
 {
+	const float dt = ft.Mark();
+
 	goal.UpdateColor();
 	if( isStarted && !isGameOver )
 	{
-		dude.Update( wnd.kbd );
+		dude.Update( wnd.kbd, dt);
 		dude.ClampToScreen();
 
 		for( int i = 0; i < nPoo; ++i )
 		{
-			poos[i].Update();
+			poos[i].Update(dt);
 			if( poos[i].TestCollision( dude ) )
 			{
 				isGameOver = true;
@@ -28433,8 +28435,6 @@ void Game::ComposeFrame()
 	if( !isStarted )
 	{
 		DrawTitleScreen( 325,211 );
-		//gfx.DrawCircle(200, 200, 100, Colors::Blue);
-		gfx.DrawDonut(200, 200, 100, 90, Colors::Blue);
 	}
 	else
 	{
@@ -28450,4 +28450,5 @@ void Game::ComposeFrame()
 		}
 		meter.Draw( gfx );
 	}
+
 }
