@@ -43,27 +43,16 @@ void Game::Go()
 
 void Game::UpdateModel()
 {
-	static int FrameCounter = 0;
-	FrameCounter++;
-
-	if (FrameCounter >= FramesPerSecond) {
-		seconds++;
-		FrameCounter = 0;
-	}
-
-	if (seconds % 10 == 0 && seconds != 0 && snakeMovePeriod > 4) {
-		snakeMovePeriod -= 3;
-		seconds = 0;
-	}
+	float dt = ft.Mark();
 
 	if (wnd.kbd.KeyIsPressed(VK_RETURN))
 		gameIsStarted = true;
 
 	if(!gameIsOver && gameIsStarted){
 
-		++snakeMoveCounter;
+		snakeMoveCounter += dt;
 		if (snakeMoveCounter >= snakeMovePeriod) {
-			snakeMoveCounter = 0;
+			snakeMoveCounter = 0.0f;
 
 			const Location next = snake.GetNextHeadLocation(delta_loc);
 
@@ -79,6 +68,8 @@ void Game::UpdateModel()
 
 				if (eating)
 					goal.Respawn(rng, brd, snake);
+
+				snakeMovePeriod -= dt * 0.005f;
 			}
 		}
 

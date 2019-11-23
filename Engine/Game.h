@@ -27,6 +27,7 @@
 #include "Snake.h"
 #include "Goal.h"
 #include <random>
+#include "FrameTimer.h"
 
 class Game
 {
@@ -50,11 +51,10 @@ private:
 	Snake snake;
 	Goal goal;
 	Location delta_loc = { 1,0 };
-	int snakeMovePeriod = 20;
-	int snakeMoveCounter = 0;
+	float snakeMovePeriod = 0.4f;
+	float snakeMoveCounter = 0.0f;
 	bool gameIsOver = false;
 	bool gameIsStarted = false;
-	static constexpr int FramesPerSecond = 60;
-	int seconds = 0;
+	FrameTimer ft;
 	/********************************/
 };
