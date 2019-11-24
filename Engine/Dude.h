@@ -2,6 +2,7 @@
 
 #include "Graphics.h"
 #include "Keyboard.h"
+#include "Vec2.h"
 
 class Dude
 {
@@ -14,8 +15,7 @@ public:
 	float GetWidth() const;
 	float GetHeight() const;
 private:
-	float x = 400.0f;
-	float y = 300.0f;
+	Vec2 pos = Vec2(400.0f,300.0f);
 	static constexpr float speed = 1.0f * 60.0f;
 	static constexpr float width = 20.0f;
 	static constexpr float height = 20.0f;

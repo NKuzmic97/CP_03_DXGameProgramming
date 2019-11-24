@@ -6,15 +6,13 @@
 class Poo
 {
 public:
-	void Init(float in_x, float in_y,float in_vx,float in_vy );
+	void Init(const Vec2& pos_,const Vec2& vel_);
 	void Update(float dt);
 	bool TestCollision( const Dude& dude ) const;
 	void Draw( Graphics& gfx ) const;
 private:
-	float x;
-	float y;
-	float vx;
-	float vy;
+	Vec2 pos;
+	Vec2 vel;
 	static constexpr float width = 24.0f;
 	static constexpr float height = 24.0f;
 	bool initialized = false;
