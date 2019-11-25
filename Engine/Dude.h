@@ -10,8 +10,7 @@ public:
 	void ClampToScreen();
 	void Draw( Graphics& gfx) const;
 	void Update( const Keyboard& kbd, float dt);
-	float GetX() const;
-	float GetY() const;
+	Vec2 GetPosition() const;
 	float GetWidth() const;
 	float GetHeight() const;
 private:
