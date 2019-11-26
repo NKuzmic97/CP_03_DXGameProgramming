@@ -240,50 +240,6 @@ Graphics::Graphics( HWNDKey& key )
 		_aligned_malloc( sizeof( Color ) * Graphics::ScreenWidth * Graphics::ScreenHeight,16u ) );
 }
 
-void Graphics::DrawCircle(int x, int y, int radius, Color c) {
-	const int x_start = x - radius;
-	const int x_end = x + radius;
-	const int y_start = y - radius;
-	const int y_end = y + radius;
-
-	for (int yc = y_start; yc < y_end; yc++) {
-		for (int xc = x_start; xc < x_end; xc++) {
-			//if (sqrt(pow(xc, 2) + pow(yc, 2)) < radius) {
-			//	PutPixel(xc, yc, c);
-			//}
-			int a = yc - y;
-			int b = xc - x;
-			int distancePow2 = pow(a, 2) + pow(b, 2);
-			if (distancePow2 <= radius * radius) {
-				PutPixel(xc, yc,c);
-			}
-		}
-	}
-}
-
-void Graphics::DrawDonut(int x, int y, int outerRadius,int innerRadius, Color c) {
-	const int x_start = x - outerRadius;
-	const int x_end = x + outerRadius;
-	const int y_start = y - outerRadius;
-	const int y_end = y + outerRadius;
-
-	const int xi_start = x - innerRadius;
-	const int xi_end = x + innerRadius;
-	const int yi_start = y - innerRadius;
-	const int yi_end = y + innerRadius;
-
-	for (int yc = y_start; yc < y_end; yc++) {
-		for (int xc = x_start; xc < x_end; xc++) {
-			int a = yc - y;
-			int b = xc - x;
-			int distancePow2 = pow(a, 2) + pow(b, 2);
-			if (distancePow2 <= outerRadius * outerRadius && distancePow2 >= innerRadius * innerRadius) {
-				PutPixel(xc, yc, c);
-			}
-		}
-	}
-}
-
 Graphics::~Graphics()
 {
 	// free sysbuffer memory (aligned free)
@@ -379,6 +335,24 @@ void Graphics::DrawRect( int x0,int y0,int x1,int y1,Color c )
 		}
 	}
 }
+
+void Graphics::DrawCircle( int x,int y,int radius,Color c )
+{
+	const int rad_sq = radius * radius;
+	for( int y_loop = y - radius + 1; y_loop < y + radius; y_loop++ )
+	{		
+		for( int x_loop = x - radius + 1; x_loop < x + radius; x_loop++ )
+		{
+			const int x_diff = x - x_loop;
+			const int y_diff = y - y_loop;
+			if( x_diff * x_diff + y_diff * y_diff <= rad_sq )
+			{
+				PutPixel( x_loop,y_loop,c );
+			}
+		}
+	}
+}
+
 
 //////////////////////////////////////////////////
 //           Graphics Exception

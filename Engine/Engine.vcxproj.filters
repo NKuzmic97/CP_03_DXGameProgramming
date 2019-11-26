@@ -48,22 +48,16 @@
     <ClInclude Include="Resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Poo.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Dude.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Goal.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Meter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Sound.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SoundEffect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SpriteCodex.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Vec2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="FrameTimer.h">
@@ -92,13 +86,13 @@
     <ClCompile Include="Mouse.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Poo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Dude.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Sound.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SpriteCodex.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Vec2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FrameTimer.cpp">
