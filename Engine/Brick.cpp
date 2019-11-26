@@ -1,6 +1,13 @@
 #include "Brick.h"
 
-Brick::Brick(const RectF & rec_, Color color_) {
+Brick::Brick(
+	const RectF & rec_, 
+	Color color_ )
+	:
+	rect(rec_),
+	color(color_)
+{
+	//
 }
 
 void Brick::Draw(Graphics & gfx) const {
