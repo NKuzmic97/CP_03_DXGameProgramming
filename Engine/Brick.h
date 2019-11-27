@@ -6,6 +6,7 @@
 
 class Brick {
 public:
+	Brick() = default;
 	Brick(const RectF& rec_, Color color_);
 	void Draw(Graphics& gfx) const;
 	bool DoBallCollision(Ball& ball);
