@@ -22,12 +22,14 @@
 #include "Game.h"
 #include "FrameTimer.h"
 
-Game::Game( MainWindow& wnd )
+Game::Game(MainWindow& wnd)
 	:
-	wnd( wnd ),
-	gfx( wnd ),
-	ball(Vec2(300.0f,300.0f),Vec2(200.0f,200.0f))
+	wnd(wnd),
+	gfx(wnd),
+	ball(Vec2(300.0f, 300.0f), Vec2(200.0f, 200.0f)),
+	walls(0.0f, float(Graphics::ScreenWidth), 0.0f, float(Graphics::ScreenHeight))
 {
+	//
 }
 
 void Game::Go()
@@ -42,6 +44,7 @@ void Game::UpdateModel()
 {
 	const float dt = ft.Mark();
 	ball.Update(dt);
+	ball.DoWallCollision(walls);
 }
 
 void Game::ComposeFrame()
