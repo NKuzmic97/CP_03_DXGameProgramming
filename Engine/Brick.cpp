@@ -6,7 +6,8 @@ Brick::Brick(
 	Color color_ )
 	:
 	rect(rec_),
-	color(color_)
+	color(color_),
+	destroyed(false)
 {
 	//
 }
@@ -24,7 +25,12 @@ void Brick::ExecuteBallCollision(Ball & ball) {
 	assert( CheckBallCollision(ball) );
 
 	const Vec2 ballPos = ball.GetPosition();
-	if (ballPos.x >= rect.left && ballPos.x <= rect.right) {
+
+	if ( std::signbit(ball.GetVelocity().x) == std::signbit((ballPos - GetCenter()).x)) {
+		ball.ReboundY();
+	}
+
+	else if (ballPos.x >= rect.left && ballPos.x <= rect.right) {
 		ball.ReboundY();
 	}
 	else {

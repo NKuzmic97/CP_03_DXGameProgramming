@@ -26,7 +26,7 @@ Game::Game(MainWindow& wnd)
 	:
 	wnd(wnd),
 	gfx(wnd),
-	ball(Vec2(300.0f + 24.0f, 300.0f), Vec2(-300.0f, -300.0f)),
+	ball(Vec2(300.0f + 16.0f, 300.0f), Vec2(-300.0f, -300.0f)),
 	walls(0.0f, float(Graphics::ScreenWidth), 0.0f, float(Graphics::ScreenHeight)),
 	soundBrick(L"Sounds\\arkbrick.wav"),
 	soundPad(L"Sounds\\arkpad.wav"),
@@ -40,12 +40,14 @@ Game::Game(MainWindow& wnd)
 		const Color c = colors[y];
 
 		for (int x = 0; x < nBricksAcross; x++) {
-			bricks[i++] = Brick( 
-				RectF(
-					topLeft + Vec2(x * brickWidth,y * brickHeight),
-					brickWidth,
-					brickHeight)
-				,c);
+			if (x == 3 && y == 3) {
+				bricks[i++] = Brick(
+					RectF(
+						topLeft + Vec2(x * brickWidth, y * brickHeight),
+						brickWidth,
+						brickHeight)
+					, c);
+			}
 		}
 	}
 }
