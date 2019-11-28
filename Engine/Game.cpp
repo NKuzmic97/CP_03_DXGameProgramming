@@ -30,7 +30,8 @@ Game::Game(MainWindow& wnd)
 	walls(0.0f, float(Graphics::ScreenWidth), 0.0f, float(Graphics::ScreenHeight)),
 	soundBrick(L"Sounds\\arkbrick.wav"),
 	soundPad(L"Sounds\\arkpad.wav"),
-	pad(Vec2(400.0f,500.0f),50.0f,15.0f)
+	pad(Vec2(400.0f,500.0f),50.0f,15.0f),
+	soundFart(L"Sounds\\fart1.wav")
 {
 	const Color colors[4] = { Colors::Red,Colors::Green,Colors::Blue, Colors::Cyan };
 	const Vec2 topLeft(40.0f, 40.0f);
@@ -64,6 +65,8 @@ void Game::Go()
 }
 
 void Game::UpdateModel(float dt) {
+	if (gameIsOver) return;
+
 	pad.Update(wnd.kbd, dt);
 	pad.DoWallCollision(walls);
 	ball.Update(dt);
@@ -101,16 +104,24 @@ void Game::UpdateModel(float dt) {
 		soundPad.Play();
 	}
 
-	if (ball.DoWallCollision(walls)) {
+	const int ballWallColRes = ball.DoWallCollision(walls);
+	if (ballWallColRes == 1) {
+		pad.ResetCooldown();
 		soundPad.Play();
 	}
+	else if (ballWallColRes == 2) {
+		gameIsOver = true;
+		soundFart.Play();
+	}
+
 }
 
-void Game::ComposeFrame()
-{
+void Game::ComposeFrame() {
+	if (!gameIsOver) {
 	ball.Draw(gfx);
+	pad.Draw(gfx);
+}
 	for (const Brick& b : bricks) {
 		b.Draw(gfx);
 	}
-	pad.Draw(gfx);
 }

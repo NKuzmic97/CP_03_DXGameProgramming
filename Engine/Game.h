@@ -60,5 +60,7 @@ private:
 	Sound soundBrick;
 	Brick bricks[nBricks];
 	Paddle pad;
+	bool gameIsOver = false;
+	Sound soundFart;
 	/********************************/
 };
