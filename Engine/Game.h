@@ -23,11 +23,12 @@
 #include "Keyboard.h"
 #include "Mouse.h"
 #include "Graphics.h"
-#include "Ball.h"
+#include "Board.h"
+#include "Snake.h"
+#include "Goal.h"
+#include <random>
+#include "SoundEffect.h"
 #include "FrameTimer.h"
-#include "Sound.h"
-#include "Brick.h"
-#include "Paddle.h"
 
 class Game
 {
@@ -38,7 +39,7 @@ public:
 	void Go();
 private:
 	void ComposeFrame();
-	void UpdateModel(float dt);
+	void UpdateModel();
 	/********************************/
 	/*  User Functions              */
 	/********************************/
@@ -47,19 +48,22 @@ private:
 	Graphics gfx;
 	/********************************/
 	/*  User Variables              */
-	static constexpr float brickWidth = 40.0f;
-	static constexpr float brickHeight = 24.0f;
-	static constexpr int nBricksAcross = 18;
-	static constexpr int nBricksDown = 4;
-	static constexpr int nBricks = nBricksAcross * nBricksDown;
-	Ball ball;
+	Board brd;
+	Snake snek;
+	Location delta_loc = {1,0};
+	std::mt19937 rng;
 	FrameTimer ft;
-	RectF walls;
-	Sound soundPad;
-	Sound soundBrick;
-	Brick bricks[nBricks];
-	Paddle pad;
+	Goal goal;
+	SoundEffect sfxEat = SoundEffect( { L"Sounds\\Eat.wav" } );
+	SoundEffect sfxSlither = SoundEffect( { L"Sounds\\Slither0.wav",L"Sounds\\Slither1.wav",L"Sounds\\Slither2.wav" } );
+	Sound sndMusic = Sound( L"Sounds\\Music_Loop.wav",Sound::LoopType::AutoFullSound );
+	Sound sndTitle = Sound( L"Sounds\\Title.wav" );
+	Sound sndFart = Sound( L"Sounds\\Fart.wav" );
+	static constexpr float snekMovePeriodMin = 0.06f;
+	float snekMovePeriod = 0.4f;
+	float snekMoveCounter = 0.0f;
+	static constexpr float snekSpeedupFactor = 0.005f;
 	bool gameIsOver = false;
-	Sound soundFart;
+	bool gameIsStarted = false;
 	/********************************/
 };

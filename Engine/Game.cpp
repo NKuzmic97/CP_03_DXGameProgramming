@@ -20,108 +20,110 @@
  ******************************************************************************************/
 #include "MainWindow.h"
 #include "Game.h"
-#include "FrameTimer.h"
+#include "SpriteCodex.h"
 
-Game::Game(MainWindow& wnd)
+Game::Game( MainWindow& wnd )
 	:
-	wnd(wnd),
-	gfx(wnd),
-	ball(Vec2(300.0f + 16.0f, 300.0f), Vec2(-1.0f, -1.0f)),
-	walls(0.0f, float(Graphics::ScreenWidth), 0.0f, float(Graphics::ScreenHeight)),
-	soundBrick(L"Sounds\\arkbrick.wav"),
-	soundPad(L"Sounds\\arkpad.wav"),
-	pad(Vec2(400.0f,500.0f),50.0f,15.0f),
-	soundFart(L"Sounds\\fart1.wav")
+	wnd( wnd ),
+	gfx( wnd ),
+	brd( gfx ),
+	rng( std::random_device()() ),
+	snek( {2,2} ),
+	goal( rng,brd,snek )
 {
-	const Color colors[4] = { Colors::Red,Colors::Green,Colors::Blue, Colors::Cyan };
-	const Vec2 topLeft(40.0f, 40.0f);
-	int i = 0;
-
-	for (int y = 0; y < nBricksDown; y++) {
-		const Color c = colors[y];
-
-		for (int x = 0; x < nBricksAcross; x++) {
-				bricks[i++] = Brick(
-					RectF(
-						topLeft + Vec2(x * brickWidth, y * brickHeight),
-						brickWidth,
-						brickHeight)
-					, c);
-		}
-	}
+	sndTitle.Play( 1.0f,1.0f );
 }
 
 void Game::Go()
 {
 	gfx.BeginFrame();	
-	float elapsedTime = ft.Mark();
-	while (elapsedTime > 0.0f) {
-		const float dt = std::min(0.0025f, elapsedTime);
-		UpdateModel(dt);
-		elapsedTime -= dt;
-	}
+	UpdateModel();
 	ComposeFrame();
 	gfx.EndFrame();
 }
 
-void Game::UpdateModel(float dt) {
-	if (gameIsOver) return;
+void Game::UpdateModel()
+{
+	const float dt = ft.Mark();
 
-	pad.Update(wnd.kbd, dt);
-	pad.DoWallCollision(walls);
-	ball.Update(dt);
+	if( gameIsStarted )
+	{
+		if( !gameIsOver )
+		{
+			if( wnd.kbd.KeyIsPressed( VK_UP ) )
+			{
+				delta_loc = { 0,-1 };
+			}
+			else if( wnd.kbd.KeyIsPressed( VK_DOWN ) )
+			{
+				delta_loc = { 0,1 };
+			}
+			else if( wnd.kbd.KeyIsPressed( VK_LEFT ) )
+			{
+				delta_loc = { -1,0 };
+			}
+			else if( wnd.kbd.KeyIsPressed( VK_RIGHT ) )
+			{
+				delta_loc = { 1,0 };
+			}
 
-	bool collisionHappened = false;
-	float curColDistSq;
-	int curColIndex;
-
-	for (int i = 0; i < nBricks;i++) {
-		if (bricks[i].CheckBallCollision(ball)) {
-			const float newColDistSq = (ball.GetPosition() - bricks[i].GetCenter()).GetLengthSq();
-
-			if (collisionHappened) {
-				pad.ResetCooldown();
-				if (newColDistSq < curColDistSq) {
-					curColDistSq = newColDistSq;
-					curColIndex = i;
+			snekMoveCounter += dt;
+			if( snekMoveCounter >= snekMovePeriod )
+			{
+				snekMoveCounter -= snekMovePeriod;
+				const Location next = snek.GetNextHeadLocation( delta_loc );
+				if( !brd.IsInsideBoard( next ) ||
+					snek.IsInTileExceptEnd( next ) ||
+					brd.CheckForObstacle( next ) )
+				{
+					gameIsOver = true;
+					sndFart.Play();
+					sndMusic.StopAll();
+				}
+				else
+				{
+					if( next == goal.GetLocation() )
+					{
+						snek.GrowAndMoveBy( delta_loc );
+						goal.Respawn( rng,brd,snek );
+						brd.SpawnObstacle( rng,snek,goal );
+						sfxEat.Play( rng,0.8f );
+					}
+					else
+					{
+						snek.MoveBy( delta_loc );
+					}
+					sfxSlither.Play( rng,0.08f );
 				}
 			}
-			else {
-				curColDistSq = newColDistSq;
-				curColIndex = i;
-				collisionHappened = true;
-			}
+			snekMovePeriod = std::max( snekMovePeriod - dt * snekSpeedupFactor,snekMovePeriodMin );
 		}
 	}
-
-	if (collisionHappened) {
-		pad.ResetCooldown();
-		bricks[curColIndex].ExecuteBallCollision(ball);
-		soundBrick.Play();
+	else
+	{
+		if( wnd.kbd.KeyIsPressed( VK_RETURN ) )
+		{
+			sndMusic.Play( 1.0f,0.6f );
+			gameIsStarted = true;
+		}
 	}
-
-	if (pad.DoBallCollision(ball)) {
-		soundPad.Play();
-	}
-
-	const int ballWallColRes = ball.DoWallCollision(walls);
-	if (ballWallColRes == 1) {
-		pad.ResetCooldown();
-		soundPad.Play();
-	}
-	else if (ballWallColRes == 2) {
-		gameIsOver = true;
-		soundFart.Play();
-	}
-
 }
 
-void Game::ComposeFrame() {
-	if (!gameIsOver) {
-	ball.Draw(gfx);
-	pad.Draw(gfx);
-}
-	for (const Brick& b : bricks) {
-		b.Draw(gfx);
+void Game::ComposeFrame()
+{
+	if( gameIsStarted )
+	{
+		snek.Draw( brd );
+		goal.Draw( brd );
+		if( gameIsOver )
+		{
+			SpriteCodex::DrawGameOver( 350,265,gfx );
+		}
+		brd.DrawBorder();
+		brd.DrawObstacles();
+	}
+	else
+	{
+		SpriteCodex::DrawTitle( 290,225,gfx );
 	}
 }
