@@ -379,7 +379,6 @@ void Graphics::DrawIsoRightTriBL(int x, int y, int size, Color c) {
 		}
 	}
 }
-}
 
 void Graphics::DrawIsoRightTriBR(int x, int y, int size, Color c) {
 	for (int loop_y = y; loop_y < y + size; loop_y++) {
@@ -388,7 +387,6 @@ void Graphics::DrawIsoRightTriBR(int x, int y, int size, Color c) {
 			PutPixel(loop_x, loop_y, c);
 		}
 	}
-}
 }
 
 

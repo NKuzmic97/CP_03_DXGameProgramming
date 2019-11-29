@@ -16,15 +16,15 @@ public:
 	RectF GetRect() const;
 	void ResetCooldown();
 private:
-	static constexpr float wingWidth = 20.0f;
-	static constexpr float exitXFactor = 0.045f;
-	static constexpr float fixedZoneHalfWidth = 15.0f;
+	static constexpr float swingWidth = 20.0f;
+	static constexpr float sexitXFactor = 0.045f;
+	static constexpr float sfixedZoneHalfWidth = 15.0f;
 	static constexpr Color wingColor = Colors::Red;
 	static constexpr Color color = Colors::White;
 	static constexpr float speed = 300.0f;
 	// control the paddle rebound behaviour here
-	static constexpr float maximumExitRatio = 2.6f;
-	static constexpr float fixedZoneWidthRatio = 0.2f;
+	static constexpr float smaximumExitRatio = 2.6f;
+	static constexpr float sfixedZoneWidthRatio = 0.2f;
 	// ------------------------------------------
 	//these are derived from above controls
 	float exitXFactor;

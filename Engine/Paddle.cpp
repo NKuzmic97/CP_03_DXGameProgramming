@@ -8,8 +8,8 @@ Paddle::Paddle(
 	pos(pos_),
 	halfWidth(halfWidth_),
 	halfHeight(halfHeight_),
-	exitXFactor(maximumExitRatio/halfWidth),
-	fixedZoneHalfWidth(halfWidth * fixedZoneWidthRatio),
+	exitXFactor(smaximumExitRatio/halfWidth),
+	fixedZoneHalfWidth(halfWidth * sfixedZoneWidthRatio),
 	fixedZoneExitX(fixedZoneHalfWidth * exitXFactor)
 {
 	//
@@ -18,8 +18,8 @@ Paddle::Paddle(
 void Paddle::Draw(Graphics & gfx) const {
 	RectF rect = GetRect();
 	gfx.DrawRect(rect, wingColor);
-	rect.left += wingWidth;
-	rect.right -= wingWidth;
+	rect.left += swingWidth;
+	rect.right -= swingWidth;
 	gfx.DrawRect(rect, color);
 }
 
