@@ -52,7 +52,6 @@ private:
 	static constexpr int nBricksAcross = 18;
 	static constexpr int nBricksDown = 4;
 	static constexpr int nBricks = nBricksAcross * nBricksDown;
-
 	Ball ball;
 	FrameTimer ft;
 	RectF walls;

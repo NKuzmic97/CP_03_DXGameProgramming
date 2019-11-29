@@ -62,6 +62,11 @@ public:
 	void DrawRect(const RectF& rect, Color c) {
 		DrawRect(int(rect.left), int(rect.top), int(rect.right), int(rect.bottom), c);
 	}
+	void DrawIsoRightTriUL (int x, int y, int size, Color c);
+	void DrawIsoRightTriUR(int x, int y, int size, Color c);
+	void DrawIsoRightTriBL(int x, int y, int size, Color c);
+	void DrawIsoRightTriBR(int x, int y, int size, Color c);
+
 	~Graphics();
 private:
 	Microsoft::WRL::ComPtr<IDXGISwapChain>				pSwapChain;

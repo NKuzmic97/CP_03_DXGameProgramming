@@ -17,11 +17,23 @@ public:
 	void ResetCooldown();
 private:
 	static constexpr float wingWidth = 20.0f;
-	Color wingColor = Colors::Red;
-	Color color = Colors::White;
-	float speed = 300.0f;
+	static constexpr float exitXFactor = 0.045f;
+	static constexpr float fixedZoneHalfWidth = 15.0f;
+	static constexpr Color wingColor = Colors::Red;
+	static constexpr Color color = Colors::White;
+	static constexpr float speed = 300.0f;
+	// control the paddle rebound behaviour here
+	static constexpr float maximumExitRatio = 2.6f;
+	static constexpr float fixedZoneWidthRatio = 0.2f;
+	// ------------------------------------------
+	//these are derived from above controls
+	float exitXFactor;
+	float fixedZoneHalfWidth;
+	float fixedZoneExitX;
+
 	float halfWidth;
 	float halfHeight;
+
 	Vec2 pos;
 	bool isCooldown = false;
 };
