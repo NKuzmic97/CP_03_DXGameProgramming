@@ -22,6 +22,8 @@
 #include "Game.h"
 #include "SpriteCodex.h"
 
+using CellContents = Board::CellContents;
+
 Game::Game( MainWindow& wnd )
 	:
 	wnd( wnd ),
@@ -30,13 +32,15 @@ Game::Game( MainWindow& wnd )
 	rng( std::random_device()() ),
 	snek( {2,2} )
 {
+
 	for(int i = 0;i < numPoison; i++) {
-		brd.SpawnContents(rng, snek,3);
+		brd.SpawnContents(rng, snek, CellContents::Poison);
 	}
 
 	for (int i = 0; i < numFood; i++) {
-		brd.SpawnContents(rng, snek, 2);
+		brd.SpawnContents(rng, snek, CellContents::Food);
 	}
+
 	sndTitle.Play( 1.0f,1.0f );
 }
 
@@ -85,29 +89,29 @@ void Game::UpdateModel()
 				snekMoveCounter -= snekModifiedMovePeriod;
 
 				const Location next = snek.GetNextHeadLocation( delta_loc );
-				const int contents = brd.GetContents(next);
+				const Board::CellContents contents = brd.GetContents(next);
 
 				if( !brd.IsInsideBoard( next ) ||
 					snek.IsInTileExceptEnd( next ) ||
-					contents == 1)
+					contents == Board::CellContents::Obstacle)
 				{
 					gameIsOver = true;
 					sndFart.Play(rng,1.2f);
 					sndMusic.StopAll();
 				}
 
-				else if (contents == 2) {
+				else if (contents == CellContents::Food) {
 					snek.GrowAndMoveBy(delta_loc);
 					brd.ConsumeContents(next);
-					brd.SpawnContents(rng, snek, 1);
-					brd.SpawnContents(rng, snek,2);
+					brd.SpawnContents(rng, snek, CellContents::Food);
+					brd.SpawnContents(rng, snek, CellContents::Obstacle);
 					sfxEat.Play(rng, 0.8f);
 				}
 
-				else if (contents == 3) {
+				else if (contents == CellContents::Poison) {
 					snek.MoveBy(delta_loc);
 					brd.ConsumeContents(next);
-					brd.SpawnContents(rng, snek, 3);
+					brd.SpawnContents(rng, snek, CellContents::Poison);
 					snekMovePeriod = std::max(snekMovePeriod * snekSpeedupFactor, snekMovePeriodMin);
 					sndFart.Play(rng,0.6f);
 				}
