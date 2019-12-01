@@ -38,11 +38,12 @@ void Game::Go()
 	gfx.EndFrame();
 }
 
-void Game::UpdateModel()
-{
+void Game::UpdateModel(){
+	if (wnd.mouse.LeftIsPressed()) {
+		field.OnClickReveal(wnd.mouse.GetPos());
+	}
 }
 
-void Game::ComposeFrame()
-{
+void Game::ComposeFrame(){
 	field.Draw(gfx);
 }

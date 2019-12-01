@@ -26,14 +26,18 @@ class Minefield {
 
 public:
 	Minefield(int numMines);
+	void OnClickReveal(const Vei2& screenPos);
+
 	void Draw(class Graphics& gfx) const;
-	RectI GetRect() const { 
-		return RectI(0, width * SpriteCodex::tileSize, 0, height * SpriteCodex::tileSize); }
+	RectI GetRect() const {
+		return RectI(0, width * SpriteCodex::tileSize, 0, height * SpriteCodex::tileSize);
+	}
 
 private:
 	Tile& TileAt(const class Vei2& gridPosition);
-	const Tile& TileAt(const class Vei2& gridPosition) const;
 
+	const Tile& TileAt(const class Vei2& gridPosition) const;
+	Vei2 ScreenToGrid(const Vei2& screenPos) const;
 private:
 	static constexpr int width = 20;
 	static constexpr int height = 16;

@@ -51,14 +51,6 @@ Minefield::Minefield(int numMines) {
 
 		TileAt(spawnPos).SpawnMine();
 	}
-
-	// reveal test
-	for (int i = 0; i < 120; i++) {
-		const Vei2 gridPos = { xDist(rng),yDist(rng) };
-		if(!TileAt(gridPos).IsRevealed()){
-			TileAt(gridPos).Reveal();
-		}
-	}
 }
 
 void Minefield::Draw(Graphics& gfx) const {
@@ -71,10 +63,25 @@ void Minefield::Draw(Graphics& gfx) const {
 	}
 }
 
+void Minefield::OnClickReveal(const Vei2 & screenPos) {
+	const Vei2 gridPos = ScreenToGrid(screenPos);
+
+	assert(gridPos.x >= 0 && gridPos.x < width && gridPos.y >= 0 && gridPos.y < height);
+
+	Tile& tile = TileAt(gridPos);
+	if (!tile.IsRevealed()) {
+		tile.Reveal();
+	}
+}
+
 Minefield::Tile& Minefield::TileAt(const Vei2 & gridPosition) {
 	return field[gridPosition.y * width + gridPosition.x];
 }
 
 const Minefield::Tile& Minefield::TileAt(const Vei2 & gridPosition) const {
 	return field[gridPosition.y * width + gridPosition.x];
+}
+
+Vei2 Minefield::ScreenToGrid(const Vei2 & screenPos) const {
+	return screenPos / SpriteCodex::tileSize;
 }
