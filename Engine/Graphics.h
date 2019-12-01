@@ -19,10 +19,12 @@
 *	along with The Chili DirectX Framework.  If not, see <http://www.gnu.org/licenses/>.  *
 ******************************************************************************************/
 #pragma once
+#include "ChiliWin.h"
 #include <d3d11.h>
 #include <wrl.h>
 #include "ChiliException.h"
 #include "Colors.h"
+#include "RectI.h"
 
 class Graphics
 {
@@ -57,9 +59,9 @@ public:
 	}
 	void PutPixel( int x,int y,Color c );
 	void DrawRect( int x0,int y0,int x1,int y1,Color c );
-	void DrawRectDim( int x0,int y0,int width,int height,Color c )
+	void DrawRect( const RectI& rect,Color c )
 	{
-		DrawRect( x0,y0,x0 + width,y0 + height,c );
+		DrawRect( rect.left,rect.top,rect.right,rect.bottom,c );
 	}
 	~Graphics();
 private:

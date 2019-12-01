@@ -23,11 +23,6 @@
 #include "Keyboard.h"
 #include "Mouse.h"
 #include "Graphics.h"
-#include "Board.h"
-#include "Snake.h"
-#include <random>
-#include "SoundEffect.h"
-#include "FrameTimer.h"
 
 class Game
 {
@@ -47,24 +42,5 @@ private:
 	Graphics gfx;
 	/********************************/
 	/*  User Variables              */
-	Board brd;
-	Snake snek;
-	Location delta_loc = {1,0};
-	std::mt19937 rng;
-	FrameTimer ft;
-	SoundEffect sfxEat = SoundEffect( { L"Sounds\\Eat.wav" } );
-	SoundEffect sfxSlither = SoundEffect( { L"Sounds\\Slither0.wav",L"Sounds\\Slither1.wav",L"Sounds\\Slither2.wav" } );
-	Sound sndMusic = Sound( L"Sounds\\Music_Loop.wav",Sound::LoopType::AutoFullSound );
-	Sound sndTitle = Sound( L"Sounds\\Title.wav" );
-	SoundEffect sndFart = SoundEffect({ L"Sounds\\Fart.wav" });
-	static constexpr float snekMovePeriodMin = 0.040f;
-	static constexpr float snekMovePeriodSpeedup = 0.15f;
-	static constexpr int numPoison = 240;
-	static constexpr int numFood = 12;
-	float snekMovePeriod = 0.4f;
-	float snekMoveCounter = 0.0f;
-	static constexpr float snekSpeedupFactor = 0.9f;
-	bool gameIsOver = false;
-	bool gameIsStarted = false;
 	/********************************/
 };
