@@ -11,11 +11,14 @@ class Minefield {
 		};
 	public:
 		void SpawnMine();
+		void Draw(const class Vei2& screenPos, class Graphics& gfx) const;
+		void Reveal();
+
 		bool HasMine() const {
 			return hasBomb;
 		}
-		void Draw(const class Vei2& screenPos, class Graphics& gfx) const;
-
+		bool IsRevealed() const {
+			return state == State::Revealed; }
 	private:
 		State state = State::Hidden;
 		bool hasBomb = false;
