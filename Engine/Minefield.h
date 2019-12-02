@@ -11,9 +11,12 @@ class Minefield {
 		};
 	public:
 		void SpawnMine();
-		void Draw(const class Vei2& screenPos, class Graphics& gfx) const;
+		void Draw(const class Vei2& screenPos,bool gameOver, class Graphics& gfx) const;
 		void Reveal();
+		void ToggleFlag();
+		void SetNeighborBombsCount(int bombCount);
 
+		bool IsFlagged() const;
 		bool HasMine() const {
 			return hasBomb;
 		}
@@ -22,12 +25,13 @@ class Minefield {
 	private:
 		State state = State::Hidden;
 		bool hasBomb = false;
+		int nNeighborBombs = -1;
 	};
 
 public:
 	Minefield(int numMines);
 	void OnClickReveal(const Vei2& screenPos);
-
+	void OnFlagClick(const Vei2& screenPos);
 	void Draw(class Graphics& gfx) const;
 	RectI GetRect() const {
 		return RectI(0, width * SpriteCodex::tileSize, 0, height * SpriteCodex::tileSize);
@@ -35,11 +39,12 @@ public:
 
 private:
 	Tile& TileAt(const class Vei2& gridPosition);
-
 	const Tile& TileAt(const class Vei2& gridPosition) const;
 	Vei2 ScreenToGrid(const Vei2& screenPos) const;
+	int CountNeighborBombs(const Vei2& gridPos);
 private:
 	static constexpr int width = 20;
 	static constexpr int height = 16;
+	bool gameOver = false;
 	Tile field[width * height];
 };
