@@ -21,122 +21,99 @@
 #include "Mouse.h"
 
 
-Vei2 Mouse::GetPos() const
-{
-	return { x,y };
+Vei2 Mouse::GetPos() const {
+	return {x, y};
 }
 
-int Mouse::GetPosX() const
-{
+int Mouse::GetPosX() const {
 	return x;
 }
 
-int Mouse::GetPosY() const
-{
+int Mouse::GetPosY() const {
 	return y;
 }
 
-bool Mouse::LeftIsPressed() const
-{
+bool Mouse::LeftIsPressed() const {
 	return leftIsPressed;
 }
 
-bool Mouse::RightIsPressed() const
-{
+bool Mouse::RightIsPressed() const {
 	return rightIsPressed;
 }
 
-bool Mouse::IsInWindow() const
-{
+bool Mouse::IsInWindow() const {
 	return isInWindow;
 }
 
-Mouse::Event Mouse::Read()
-{
-	if( buffer.size() > 0u )
-	{
-		Mouse::Event e = buffer.front();
+Mouse::Event Mouse::Read() {
+	if (buffer.size() > 0u) {
+		Event e = buffer.front();
 		buffer.pop();
 		return e;
 	}
-	else
-	{
-		return Mouse::Event();
-	}
+	return Event();
 }
 
-void Mouse::Flush()
-{
+void Mouse::Flush() {
 	buffer = std::queue<Event>();
 }
 
-void Mouse::OnMouseLeave()
-{
+void Mouse::OnMouseLeave() {
 	isInWindow = false;
 }
 
-void Mouse::OnMouseEnter()
-{
+void Mouse::OnMouseEnter() {
 	isInWindow = true;
 }
 
-void Mouse::OnMouseMove( int newx,int newy )
-{
+void Mouse::OnMouseMove(int newx, int newy) {
 	x = newx;
 	y = newy;
 
-	buffer.push( Mouse::Event( Mouse::Event::Type::Move,*this ) );
+	buffer.push(Event(Event::Type::Move, *this));
 	TrimBuffer();
 }
 
-void Mouse::OnLeftPressed( int x,int y )
-{
+void Mouse::OnLeftPressed(int x, int y) {
 	leftIsPressed = true;
 
-	buffer.push( Mouse::Event( Mouse::Event::Type::LPress,*this ) );
+	buffer.push(Event(Event::Type::LPress, *this));
 	TrimBuffer();
 }
 
-void Mouse::OnLeftReleased( int x,int y )
-{
+void Mouse::OnLeftReleased(int x, int y) {
 	leftIsPressed = false;
 
-	buffer.push( Mouse::Event( Mouse::Event::Type::LRelease,*this ) );
+	buffer.push(Event(Event::Type::LRelease, *this));
 	TrimBuffer();
 }
 
-void Mouse::OnRightPressed( int x,int y )
-{
+void Mouse::OnRightPressed(int x, int y) {
 	rightIsPressed = true;
 
-	buffer.push( Mouse::Event( Mouse::Event::Type::RPress,*this ) );
+	buffer.push(Event(Event::Type::RPress, *this));
 	TrimBuffer();
 }
 
-void Mouse::OnRightReleased( int x,int y )
-{
+void Mouse::OnRightReleased(int x, int y) {
 	rightIsPressed = false;
 
-	buffer.push( Mouse::Event( Mouse::Event::Type::RRelease,*this ) );
+	buffer.push(Event(Event::Type::RRelease, *this));
 	TrimBuffer();
 }
 
-void Mouse::OnWheelUp( int x,int y )
-{
-	buffer.push( Mouse::Event( Mouse::Event::Type::WheelUp,*this ) );
+void Mouse::OnWheelUp(int x, int y) {
+	buffer.push(Event(Event::Type::WheelUp, *this));
 	TrimBuffer();
 }
 
-void Mouse::OnWheelDown( int x,int y )
-{
-	buffer.push( Mouse::Event( Mouse::Event::Type::WheelDown,*this ) );
+void Mouse::OnWheelDown(int x, int y) {
+	buffer.push(Event(Event::Type::WheelDown, *this));
 	TrimBuffer();
 }
 
-void Mouse::TrimBuffer()
-{
-	while( buffer.size() > bufferSize )
-	{
+void Mouse::TrimBuffer() {
+	while (buffer.size() > bufferSize) {
 		buffer.pop();
 	}
 }

@@ -22,48 +22,46 @@
 #include "Game.h"
 
 
-Game::Game( MainWindow& wnd )
+Game::Game(MainWindow& wnd)
 	:
-	wnd( wnd ),
-	gfx( wnd ),
-	field(gfx.GetRect().GetCenter(),20)
-{
+	wnd(wnd),
+	gfx(wnd),
+	field(gfx.GetRect().GetCenter(), 20) {
 }
 
-void Game::Go()
-{
-	gfx.BeginFrame();	
+void Game::Go() {
+	gfx.BeginFrame();
 	UpdateModel();
 	ComposeFrame();
 	gfx.EndFrame();
 }
 
-void Game::UpdateModel(){
+void Game::UpdateModel() {
 	while (!wnd.mouse.IsEmpty()) {
 		const auto e = wnd.mouse.Read();
-		
-		if(field.GetState() == Minefield::State::Playing){
-		if (e.GetType() == Mouse::Event::Type::LPress) {
-			const Vei2 mousePos = e.GetPos();
-			if (field.GetRect().Contains(mousePos)) {
-				field.OnClickReveal(mousePos);
-			}
-		}
 
-		else if (e.GetType() == Mouse::Event::Type::RPress) {
-			const Vei2 mousePos = e.GetPos();
-			if (field.GetRect().Contains(mousePos)) {
-				field.OnFlagClick(mousePos);
+		if (field.GetState() == Minefield::State::Playing) {
+			if (e.GetType() == Mouse::Event::Type::LPress) {
+				const Vei2 mousePos = e.GetPos();
+				if (field.GetRect().Contains(mousePos)) {
+					field.OnClickReveal(mousePos);
+				}
 			}
-		}
+
+			else if (e.GetType() == Mouse::Event::Type::RPress) {
+				const Vei2 mousePos = e.GetPos();
+				if (field.GetRect().Contains(mousePos)) {
+					field.OnFlagClick(mousePos);
+				}
+			}
 		}
 	}
 }
 
-void Game::ComposeFrame(){
+void Game::ComposeFrame() {
 	field.Draw(gfx);
-	
-	if(field.GetState() == Minefield::State::Win ) {
+
+	if (field.GetState() == Minefield::State::Win) {
 		SpriteCodex::DrawWin(gfx.GetRect().GetCenter(), gfx);
 	}
 }
