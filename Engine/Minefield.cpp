@@ -86,13 +86,15 @@ bool Minefield::Tile::IsFlagged() const {
 	return state == State::Flagged;
 }
 
-Minefield::Minefield(int numMines) {
+Minefield::Minefield(const Vei2& center,int numMines):
+topLeft(center-Vei2(width * SpriteCodex::tileSize,height*SpriteCodex::tileSize)/2){
 	assert(numMines > 0 && numMines < width * height);
 
 	std::random_device rd;
 	std::mt19937 rng(rd());
 	std::uniform_int_distribution<int> xDist(0, width - 1);
 	std::uniform_int_distribution<int> yDist(0, height - 1);
+
 
 	for (int numSpawned = 0; numSpawned < numMines; numSpawned++) {
 		Vei2 spawnPos;
@@ -115,7 +117,7 @@ void Minefield::Draw(Graphics& gfx) const {
 
 	for (Vei2 gridPos = { 0,0 }; gridPos.y < height; gridPos.y++) {
 		for (gridPos.x = 0; gridPos.x < width; gridPos.x++) {
-			TileAt(gridPos).Draw(gridPos * SpriteCodex::tileSize,gameOver,gfx);
+			TileAt(gridPos).Draw(topLeft + gridPos * SpriteCodex::tileSize,gameOver,gfx);
 		}
 	}
 }
@@ -158,7 +160,7 @@ const Minefield::Tile& Minefield::TileAt(const Vei2 & gridPosition) const {
 }
 
 Vei2 Minefield::ScreenToGrid(const Vei2& screenPos) const {
-	return screenPos / SpriteCodex::tileSize;
+	return (screenPos - topLeft) / SpriteCodex::tileSize;
 }
 
 int Minefield::CountNeighborBombs(const Vei2& gridPos) {

@@ -29,12 +29,12 @@ class Minefield {
 	};
 
 public:
-	Minefield(int numMines);
+	Minefield(const Vei2& center,int numMines);
 	void OnClickReveal(const Vei2& screenPos);
 	void OnFlagClick(const Vei2& screenPos);
 	void Draw(class Graphics& gfx) const;
 	RectI GetRect() const {
-		return RectI(0, width * SpriteCodex::tileSize, 0, height * SpriteCodex::tileSize);
+		return RectI(topLeft, width * SpriteCodex::tileSize, height * SpriteCodex::tileSize);
 	}
 
 private:
@@ -45,6 +45,7 @@ private:
 private:
 	static constexpr int width = 20;
 	static constexpr int height = 16;
+	Vei2 topLeft;
 	bool gameOver = false;
 	Tile field[width * height];
 };
