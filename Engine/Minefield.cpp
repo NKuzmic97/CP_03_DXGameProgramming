@@ -10,8 +10,8 @@ void Minefield::Tile::SpawnMine() {
 	hasBomb = true;
 }
 
-void Minefield::Tile::Draw(const Vei2 & screenPos,bool gameOver, Graphics & gfx) const {
-	if (!gameOver) {
+void Minefield::Tile::Draw(const Vei2 & screenPos,Minefield::State fieldState, Graphics & gfx) const {
+	if (fieldState != Minefield::State::Lost) {
 		switch (state) {
 		case State::Hidden:
 			SpriteCodex::DrawTileButton(screenPos, gfx);
@@ -97,7 +97,7 @@ topLeft(center-Vei2(width * SpriteCodex::tileSize,height*SpriteCodex::tileSize)/
 
 
 	for (int numSpawned = 0; numSpawned < numMines; numSpawned++) {
-		Vei2 spawnPos;
+		Vei2 spawnPos = {0,0};
 		do {
 			spawnPos = { xDist(rng), yDist(rng) };
 		} while (TileAt(spawnPos).HasMine());
@@ -119,13 +119,13 @@ void Minefield::Draw(Graphics& gfx) const {
 
 	for (Vei2 gridPos = { 0,0 }; gridPos.y < height; gridPos.y++) {
 		for (gridPos.x = 0; gridPos.x < width; gridPos.x++) {
-			TileAt(gridPos).Draw(topLeft + gridPos * SpriteCodex::tileSize,gameOver,gfx);
+			TileAt(gridPos).Draw(topLeft + gridPos * SpriteCodex::tileSize,state,gfx);
 		}
 	}
 }
 
 void Minefield::OnClickReveal(const Vei2 & screenPos) {
-	if(!gameOver){
+	if(state == State::Playing){
 	const Vei2 gridPos = ScreenToGrid(screenPos);
 
 	assert(gridPos.x >= 0 && gridPos.x < width && gridPos.y >= 0 && gridPos.y < height);
@@ -134,15 +134,18 @@ void Minefield::OnClickReveal(const Vei2 & screenPos) {
 	if (!tile.IsRevealed() && !tile.IsFlagged()) {
 		tile.Reveal();
 		if (tile.HasMine()) {
-			gameOver = true;
+			state = State::Lost;
 			sndLose.Play();
+		}
+		else if(GameIsWon()) {
+			state = State::Win;
 		}
 	}
 	}
 }
 
 void Minefield::OnFlagClick(const Vei2 & screenPos) {
-	if(!gameOver){
+	if(state == State::Playing){
 		const Vei2 gridPos = ScreenToGrid(screenPos);
 
 	assert(gridPos.x >= 0 && gridPos.x < width && gridPos.y >= 0 && gridPos.y < height);
@@ -173,9 +176,9 @@ int Minefield::CountNeighborBombs(const Vei2& gridPos) {
 	const int yEnd = std::min(height - 1, gridPos.y + 1);
 
 	int count = 0;
-	for (Vei2 gridPos = { xStart,yStart }; gridPos.y <= yEnd; gridPos.y++) {
-		for (gridPos.x = xStart; gridPos.x <= xEnd; gridPos.x++) {
-			if (TileAt(gridPos).HasMine()) {
+	for (Vei2 gridPos_ = { xStart,yStart }; gridPos_.y <= yEnd; gridPos_.y++) {
+		for (gridPos_.x = xStart; gridPos_.x <= xEnd; gridPos_.x++) {
+			if (TileAt(gridPos_).HasMine()) {
 				count++;
 			}
 		}
@@ -184,18 +187,11 @@ int Minefield::CountNeighborBombs(const Vei2& gridPos) {
 	return count;
 }
 
-bool Minefield::GameIsWon() const {
-	for(const auto& t : field)
-	{
-		if((t.HasMine() && !t.IsFlagged()) ||
-			(!t.HasMine() && !t.IsRevealed()))
-		{
-			return false;
-		}
-	}
-	return true;
+Minefield::State Minefield::GetState() const {
+	return state;
 }
 
-bool Minefield::GameIsLost() const {
-	return gameOver;
+bool Minefield::GameIsWon() const {
+	return state == State::Win;
 }
+
