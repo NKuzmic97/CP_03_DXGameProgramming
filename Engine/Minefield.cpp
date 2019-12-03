@@ -113,6 +113,8 @@ topLeft(center-Vei2(width * SpriteCodex::tileSize,height*SpriteCodex::tileSize)/
 }
 
 void Minefield::Draw(Graphics& gfx) const {
+	gfx.DrawRect(GetRect().GetExpanded(borderThinkness), borderColor);
+
 	gfx.DrawRect(GetRect(), SpriteCodex::baseColor);
 
 	for (Vei2 gridPos = { 0,0 }; gridPos.y < height; gridPos.y++) {
