@@ -1,5 +1,5 @@
 #include "Minefield.h"
-#include <assert.h>
+#include <cassert>
 #include <random>
 #include "Vei2.h"
 #include "Graphics.h"
@@ -113,7 +113,7 @@ topLeft(center-Vei2(width * SpriteCodex::tileSize,height*SpriteCodex::tileSize)/
 }
 
 void Minefield::Draw(Graphics& gfx) const {
-	gfx.DrawRect(GetRect().GetExpanded(borderThinkness), borderColor);
+	gfx.DrawRect(GetRect().GetExpanded(borderThickness), borderColor);
 
 	gfx.DrawRect(GetRect(), SpriteCodex::baseColor);
 
@@ -135,6 +135,7 @@ void Minefield::OnClickReveal(const Vei2 & screenPos) {
 		tile.Reveal();
 		if (tile.HasMine()) {
 			gameOver = true;
+			sndLose.Play();
 		}
 	}
 	}
@@ -142,7 +143,7 @@ void Minefield::OnClickReveal(const Vei2 & screenPos) {
 
 void Minefield::OnFlagClick(const Vei2 & screenPos) {
 	if(!gameOver){
-	const Vei2 gridPos = ScreenToGrid(screenPos);
+		const Vei2 gridPos = ScreenToGrid(screenPos);
 
 	assert(gridPos.x >= 0 && gridPos.x < width && gridPos.y >= 0 && gridPos.y < height);
 
@@ -181,4 +182,20 @@ int Minefield::CountNeighborBombs(const Vei2& gridPos) {
 	}
 
 	return count;
+}
+
+bool Minefield::GameIsWon() const {
+	for(const auto& t : field)
+	{
+		if((t.HasMine() && !t.IsFlagged()) ||
+			(!t.HasMine() && !t.IsRevealed()))
+		{
+			return false;
+		}
+	}
+	return true;
+}
+
+bool Minefield::GameIsLost() const {
+	return gameOver;
 }

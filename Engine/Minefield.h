@@ -1,5 +1,6 @@
 #pragma once
 #include "SpriteCodex.h"
+#include "Sound.h"
 
 class Minefield {
 	class Tile {
@@ -36,7 +37,8 @@ public:
 	RectI GetRect() const {
 		return RectI(topLeft, width * SpriteCodex::tileSize, height * SpriteCodex::tileSize);
 	}
-
+	bool GameIsWon() const;
+	bool GameIsLost() const;
 private:
 	Tile& TileAt(const class Vei2& gridPosition);
 	const Tile& TileAt(const class Vei2& gridPosition) const;
@@ -45,8 +47,9 @@ private:
 private:
 	static constexpr int width = 20;
 	static constexpr int height = 16;
-	static constexpr int borderThinkness = 10;
+	static constexpr int borderThickness = 10;
 	static constexpr Color borderColor = Colors::Blue;
+	Sound sndLose = Sound(L"spayed.wav");
 	Vei2 topLeft;
 	bool gameOver = false;
 	Tile field[width * height];

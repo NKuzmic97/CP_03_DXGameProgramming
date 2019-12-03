@@ -41,6 +41,7 @@ void Game::Go()
 void Game::UpdateModel(){
 	while (!wnd.mouse.IsEmpty()) {
 		const auto e = wnd.mouse.Read();
+		if(!field.GameIsWon()){
 		if (e.GetType() == Mouse::Event::Type::LPress) {
 			const Vei2 mousePos = e.GetPos();
 			if (field.GetRect().Contains(mousePos)) {
@@ -54,9 +55,14 @@ void Game::UpdateModel(){
 				field.OnFlagClick(mousePos);
 			}
 		}
+		}
 	}
 }
 
 void Game::ComposeFrame(){
 	field.Draw(gfx);
+	
+	if(field.GameIsWon()) {
+		SpriteCodex::DrawWin(gfx.GetRect().GetCenter(), gfx);
+	}
 }
