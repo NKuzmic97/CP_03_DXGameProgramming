@@ -26,6 +26,7 @@ public:
 		void SetNeighborBombsCount(int bombCount);
 
 		bool IsFlagged() const;
+		bool HasNoNeighborBombs() const;
 
 		bool HasMine() const {
 			return hasBomb;
@@ -60,6 +61,7 @@ private:
 	Vei2 ScreenToGrid(const Vei2& screenPos) const;
 	int CountNeighborBombs(const Vei2& gridPos);
 	bool GameIsWon() const;
+	void RevealTile(const Vei2& gridPos);
 private:
 	static constexpr int width = 20;
 	static constexpr int height = 16;

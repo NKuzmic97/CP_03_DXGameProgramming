@@ -86,6 +86,10 @@ bool Minefield::Tile::IsFlagged() const {
 	return state == State::Flagged;
 }
 
+bool Minefield::Tile::HasNoNeighborBombs() const {
+	return nNeighborBombs == 0;
+}
+
 Minefield::Minefield(const Vei2& center, int numMines):
 	topLeft(center - Vei2(width * SpriteCodex::tileSize, height * SpriteCodex::tileSize) / 2) {
 	assert(numMines > 0 && numMines < width * height);
@@ -128,20 +132,12 @@ void Minefield::Draw(Graphics& gfx) const {
 void Minefield::OnClickReveal(const Vei2& screenPos) {
 	if (state == State::Playing) {
 		const Vei2 gridPos = ScreenToGrid(screenPos);
-
 		assert(gridPos.x >= 0 && gridPos.x < width && gridPos.y >= 0 && gridPos.y < height);
+		RevealTile(gridPos);
+	}
 
-		Tile& tile = TileAt(gridPos);
-		if (!tile.IsRevealed() && !tile.IsFlagged()) {
-			tile.Reveal();
-			if (tile.HasMine()) {
-				state = State::Lost;
-				sndLose.Play();
-			}
-			else if (GameIsWon()) {
-				state = State::Win;
-			}
-		}
+	if (GameIsWon()) {
+		state = State::Win;
 	}
 }
 
@@ -194,4 +190,27 @@ Minefield::State Minefield::GetState() const {
 
 bool Minefield::GameIsWon() const {
 	return state == State::Win;
+}
+
+void Minefield::RevealTile(const Vei2& gridPos) {
+	Tile& tile = TileAt(gridPos);
+	if (!tile.IsRevealed() && !tile.IsFlagged()) {
+		tile.Reveal();
+		if (tile.HasMine()) {
+			state = State::Lost;
+			sndLose.Play();
+		}
+		else if (tile.HasNoNeighborBombs()) {
+			const int xStart = std::max(0, gridPos.x - 1);
+			const int yStart = std::max(0, gridPos.y - 1);
+			const int xEnd = std::min(width - 1, gridPos.x + 1);
+			const int yEnd = std::min(height - 1, gridPos.y + 1);
+
+			for (Vei2 gridPos_ = { xStart, yStart }; gridPos_.y <= yEnd; gridPos_.y++) {
+				for (gridPos_.x = xStart; gridPos_.x <= xEnd; gridPos_.x++) {
+						RevealTile(gridPos_);
+				}
+			}
+		}
+	}
 }
