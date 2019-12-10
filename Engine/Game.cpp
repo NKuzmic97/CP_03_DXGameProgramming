@@ -20,48 +20,78 @@
  ******************************************************************************************/
 #include "MainWindow.h"
 #include "Game.h"
+#include "SpriteCodex.h"
 
-
-Game::Game(MainWindow& wnd)
+Game::Game( MainWindow& wnd )
 	:
-	wnd(wnd),
-	gfx(wnd),
-	field(gfx.GetRect().GetCenter(), 20) {
+	wnd( wnd ),
+	gfx( wnd ),
+	menu( { gfx.GetRect().GetCenter().x,200 } ),
+	field( gfx.GetRect().GetCenter(),4 )
+{
 }
 
-void Game::Go() {
-	gfx.BeginFrame();
+void Game::Go()
+{
+	gfx.BeginFrame();	
 	UpdateModel();
 	ComposeFrame();
 	gfx.EndFrame();
 }
 
-void Game::UpdateModel() {
-	while (!wnd.mouse.IsEmpty()) {
+void Game::UpdateModel()
+{
+	while( !wnd.mouse.IsEmpty() )
+	{
 		const auto e = wnd.mouse.Read();
-
-		if (field.GetState() == Minefield::State::Playing) {
-			if (e.GetType() == Mouse::Event::Type::LPress) {
-				const Vei2 mousePos = e.GetPos();
-				if (field.GetRect().Contains(mousePos)) {
-					field.OnClickReveal(mousePos);
+		if( state == State::Memesweeper )
+		{
+			if( field.GetState() == MemeField::State::Memeing )
+			{
+				if( e.GetType() == Mouse::Event::Type::LPress )
+				{
+					const Vei2 mousePos = e.GetPos();
+					if( field.GetRect().Contains( mousePos ) )
+					{
+						field.OnRevealClick( mousePos );
+					}
+				}
+				else if( e.GetType() == Mouse::Event::Type::RPress )
+				{
+					const Vei2 mousePos = e.GetPos();
+					if( field.GetRect().Contains( mousePos ) )
+					{
+						field.OnFlagClick( mousePos );
+					}
 				}
 			}
-
-			else if (e.GetType() == Mouse::Event::Type::RPress) {
-				const Vei2 mousePos = e.GetPos();
-				if (field.GetRect().Contains(mousePos)) {
-					field.OnFlagClick(mousePos);
-				}
+		}
+		else
+		{
+			const SelectionMenu::Size s = menu.ProcessMouse( e );
+			switch( s )
+			{
+			case SelectionMenu::Size::Small:
+			case SelectionMenu::Size::Medium:
+			case SelectionMenu::Size::Large:
+				state = State::Memesweeper;
 			}
 		}
 	}
 }
 
-void Game::ComposeFrame() {
-	field.Draw(gfx);
-
-	if (field.GetState() == Minefield::State::Win) {
-		SpriteCodex::DrawWin(gfx.GetRect().GetCenter(), gfx);
+void Game::ComposeFrame()
+{
+	if( state == State::Memesweeper )
+	{
+		field.Draw( gfx );
+		if( field.GetState() == MemeField::State::Winrar )
+		{
+			SpriteCodex::DrawWin( gfx.GetRect().GetCenter(),gfx );
+		}
+	}
+	else
+	{
+		menu.Draw( gfx );
 	}
 }
