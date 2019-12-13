@@ -20,7 +20,6 @@
  ******************************************************************************************/
 #pragma once
 #include <queue>
-#include "Vei2.h"
 
 class Mouse
 {
@@ -29,7 +28,7 @@ public:
 	class Event
 	{
 	public:
-		enum class Type
+		enum Type
 		{
 			LPress,
 			LRelease,
@@ -49,7 +48,7 @@ public:
 	public:
 		Event()
 			:
-			type( Type::Invalid ),
+			type( Invalid ),
 			leftIsPressed( false ),
 			rightIsPressed( false ),
 			x( 0 ),
@@ -65,13 +64,13 @@ public:
 		{}
 		bool IsValid() const
 		{
-			return type != Type::Invalid;
+			return type != Invalid;
 		}
 		Type GetType() const
 		{
 			return type;
 		}
-		Vei2 GetPos() const
+		std::pair<int,int> GetPos() const
 		{
 			return{ x,y };
 		}
@@ -96,7 +95,7 @@ public:
 	Mouse() = default;
 	Mouse( const Mouse& ) = delete;
 	Mouse& operator=( const Mouse& ) = delete;
-	Vei2 GetPos() const;
+	std::pair<int,int> GetPos() const;
 	int GetPosX() const;
 	int GetPosY() const;
 	bool LeftIsPressed() const;

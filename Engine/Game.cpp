@@ -21,14 +21,24 @@
 #include "MainWindow.h"
 #include "Game.h"
 #include "SpriteCodex.h"
-#include <cassert>
 
 Game::Game( MainWindow& wnd )
 	:
 	wnd( wnd ),
 	gfx( wnd ),
-	menu( { gfx.GetRect().GetCenter().x,200 } )
+	brd( gfx ),
+	rng( std::random_device()() ),
+	snek( {2,2} )
 {
+	for( int i = 0; i < nPoison; i++ )
+	{
+		brd.SpawnContents( rng,snek,Board::CellContents::Poison );
+	}
+	for( int i = 0; i < nFood; i++ )
+	{
+		brd.SpawnContents( rng,snek,Board::CellContents::Food );
+	}
+	sndTitle.Play( 1.0f,1.0f );
 }
 
 void Game::Go()
@@ -41,82 +51,96 @@ void Game::Go()
 
 void Game::UpdateModel()
 {
-	while( !wnd.mouse.IsEmpty() )
+	const float dt = ft.Mark();
+	
+	if( gameIsStarted )
 	{
-		const auto e = wnd.mouse.Read();
-		if( state == State::Memesweeper )
+		if( !gameIsOver )
 		{
-			if( pField->GetState() == MemeField::State::Memeing )
+			if( wnd.kbd.KeyIsPressed( VK_UP ) )
 			{
-				if( e.GetType() == Mouse::Event::Type::LPress )
-				{
-					const Vei2 mousePos = e.GetPos();
-					if( pField->GetRect().Contains( mousePos ) )
-					{
-						pField->OnRevealClick( mousePos );
-					}
-				}
-				else if( e.GetType() == Mouse::Event::Type::RPress )
-				{
-					const Vei2 mousePos = e.GetPos();
-					if( pField->GetRect().Contains( mousePos ) )
-					{
-						pField->OnFlagClick( mousePos );
-					}
-				}
+				delta_loc = { 0,-1 };
 			}
-			else {
-				if(e.GetType() == Mouse::Event::Type::LPress) {
-					DestroyField();
-					state = State::SelectionMenu;
-				}
-			}
-		}
-		else
-		{
-			const SelectionMenu::Size s = menu.ProcessMouse( e );
-			switch( s )
+			else if( wnd.kbd.KeyIsPressed( VK_DOWN ) )
 			{
-			case SelectionMenu::Size::Small:
-				CreateField(8, 4, 5);
-				state = State::Memesweeper;
-				break;
-			case SelectionMenu::Size::Medium:
-				CreateField(14, 7, 15);
-				state = State::Memesweeper;
-				break;
-			case SelectionMenu::Size::Large:
-				CreateField(24, 16, 45);
-				state = State::Memesweeper;
-				break;
+				delta_loc = { 0,1 };
 			}
-		}
-	}
-}
+			else if( wnd.kbd.KeyIsPressed( VK_LEFT ) )
+			{
+				delta_loc = { -1,0 };
+			}
+			else if( wnd.kbd.KeyIsPressed( VK_RIGHT ) )
+			{
+				delta_loc = { 1,0 };
+			}
 
-void Game::CreateField(int width, int height, int nMemes) {
-	assert(pField == nullptr);
-	pField = new MemeField(gfx.GetRect().GetCenter(), width, height, nMemes);
-}
+			float snekModifiedMovePeriod = snekMovePeriod;
+			if( wnd.kbd.KeyIsPressed( VK_CONTROL ) )
+			{
+				snekModifiedMovePeriod = std::min( snekMovePeriod,snekMovePeriodSpeedup );
+			}
 
-void Game::DestroyField() {
-	pField->FreeResources();
-	delete pField;
-	pField = nullptr;
-}
-
-void Game::ComposeFrame()
-{
-	if( state == State::Memesweeper )
-	{
-		pField->Draw( gfx );
-		if( pField->GetState() == MemeField::State::Winrar )
-		{
-			SpriteCodex::DrawWin( gfx.GetRect().GetCenter(),gfx );
+			snekMoveCounter += dt;
+			if( snekMoveCounter >= snekModifiedMovePeriod )
+			{
+				snekMoveCounter -= snekModifiedMovePeriod;
+				const Location next = snek.GetNextHeadLocation( delta_loc );
+				const Board::CellContents contents = brd.GetContents( next );
+				if( !brd.IsInsideBoard( next ) ||
+					snek.IsInTileExceptEnd( next ) ||
+					contents == Board::CellContents::Obstacle )
+				{
+					gameIsOver = true;
+					sndFart.Play( rng,1.2f );
+					sndMusic.StopAll();
+				}
+				else if( contents == Board::CellContents::Food )
+				{
+					snek.GrowAndMoveBy( delta_loc );
+					brd.ConsumeContents( next );
+					brd.SpawnContents( rng,snek,Board::CellContents::Obstacle );
+					brd.SpawnContents( rng,snek,Board::CellContents::Food );
+					sfxEat.Play( rng,0.8f );
+				}
+				else if( contents == Board::CellContents::Poison )
+				{
+					snek.MoveBy( delta_loc );
+					brd.ConsumeContents( next );
+					snekMovePeriod = std::max( snekMovePeriod * snekSpeedupFactor,snekMovePeriodMin );
+					sndFart.Play( rng,0.6f );
+				}
+				else
+				{
+					snek.MoveBy( delta_loc );
+					sfxSlither.Play( rng,0.08f );
+				}
+			}
 		}
 	}
 	else
 	{
-		menu.Draw( gfx );
+		if( wnd.kbd.KeyIsPressed( VK_RETURN ) )
+		{
+			sndMusic.Play( 1.0f,0.6f );
+			gameIsStarted = true;
+		}
+	}
+}
+
+void Game::ComposeFrame()
+{
+	if( gameIsStarted )
+	{
+		snek.Draw( brd );
+		brd.DrawCells();
+		if( gameIsOver )
+		{
+			SpriteCodex::DrawGameOver( 350,265,gfx );
+		}
+		brd.DrawBorder();
+	}
+	else
+	{
+		SpriteCodex::DrawTitle( 290,225,gfx );
 	}
 }

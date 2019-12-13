@@ -23,17 +23,14 @@
 #include "Keyboard.h"
 #include "Mouse.h"
 #include "Graphics.h"
-#include "MemeField.h"
-#include "SelectionMenu.h"
+#include "Board.h"
+#include "Snake.h"
+#include <random>
+#include "SoundEffect.h"
+#include "FrameTimer.h"
 
 class Game
 {
-private:
-	enum class State
-	{
-		SelectionMenu,
-		Memesweeper
-	};
 public:
 	Game( class MainWindow& wnd );
 	Game( const Game& ) = delete;
@@ -44,16 +41,30 @@ private:
 	void UpdateModel();
 	/********************************/
 	/*  User Functions              */
-	void CreateField(int width, int height, int nMemes);
-	void DestroyField();
 	/********************************/
 private:
 	MainWindow& wnd;
 	Graphics gfx;
 	/********************************/
 	/*  User Variables              */
-	MemeField* pField = nullptr;
-	SelectionMenu menu;
-	State state = State::SelectionMenu;
+	Board brd;
+	Snake snek;
+	Location delta_loc = {1,0};
+	std::mt19937 rng;
+	FrameTimer ft;
+	SoundEffect sfxEat = SoundEffect( { L"Sounds\\Eat.wav" } );
+	SoundEffect sfxSlither = SoundEffect( { L"Sounds\\Slither0.wav",L"Sounds\\Slither1.wav",L"Sounds\\Slither2.wav" } );
+	Sound sndMusic = Sound( L"Sounds\\Music_Loop.wav",Sound::LoopType::AutoFullSound );
+	Sound sndTitle = Sound( L"Sounds\\Title.wav" );
+	SoundEffect sndFart = SoundEffect( { L"Sounds\\Fart.wav" } );
+	static constexpr float snekMovePeriodMin = 0.040f;
+	static constexpr float snekMovePeriodSpeedup = 0.15f;
+	static constexpr int nPoison = 240;
+	static constexpr int nFood = 12;
+	float snekMovePeriod = 0.4f;
+	float snekMoveCounter = 0.0f;
+	static constexpr float snekSpeedupFactor = 0.93f;
+	bool gameIsOver = false;
+	bool gameIsStarted = false;
 	/********************************/
 };
