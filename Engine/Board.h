@@ -4,18 +4,23 @@
 #include "Location.h"
 #include <random>
 
+class GameSettings;
+
 class Board
 {
 public:
-	enum class CellContents
-	{
+	enum class CellContents {
 		Empty,
 		Obstacle,
 		Food,
 		Poison
 	};
 public:
-	Board( Graphics& gfx );
+	Board(const GameSettings& settings, Graphics& gfx );
+	Board(const Board&) = delete;
+	Board& operator=(const Board&) = delete;
+	~Board();
+	
 	void DrawCell( const Location& loc,Color c );
 	int GetGridWidth() const;
 	int GetGridHeight() const;
@@ -26,18 +31,19 @@ public:
 	void DrawBorder();
 	void DrawCells();
 private:
+	int dimension;
+	int width;
+	int height;
+	
 	static constexpr Color borderColor = Colors::Blue;
 	static constexpr Color obstacleColor = Colors::Gray;
 	static constexpr Color poisonColor = { 64,8,64 };
 	static constexpr Color foodColor = Colors::Red;
-	static constexpr int dimension = 20;
 	static constexpr int cellPadding = 1;
-	static constexpr int width = 32;
-	static constexpr int height = 24;
 	static constexpr int borderWidth = 4;
 	static constexpr int borderPadding = 2;
 	static constexpr int x = 70;
 	static constexpr int y = 50;
-	CellContents contents[width * height] = { CellContents::Empty };
+	CellContents* contents = nullptr;
 	Graphics& gfx;
 };

@@ -1,15 +1,28 @@
 #include "Board.h"
 #include "Snake.h"
+#include "GameSettings.h"
 #include <assert.h>
 
-Board::Board( Graphics& gfx )
+Board::Board(const GameSettings& settings,Graphics& gfx )
 	:
+	dimension(settings.GetTileSize()),
+	width(settings.GetBoardWidth()),
+	height(settings.GetBoardHeight()),
+	contents(new CellContents[width * height]),
 	gfx( gfx )
-{}
+{
+	for(int i=0;i<width * height; i++) {
+		contents[i] = CellContents::Empty;
+	}
+}
+
+Board::~Board() {
+	delete[] contents;
+}
 
 void Board::DrawCell( const Location & loc,Color c )
 {
-	assert( loc.x >= 0 );
+	assert( loc.x >= 0);
 	assert( loc.x < width );
 	assert( loc.y >= 0 );
 	assert( loc.y < height );
