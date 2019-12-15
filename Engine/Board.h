@@ -3,6 +3,7 @@
 #include "Graphics.h"
 #include "Location.h"
 #include <random>
+#include <vector>
 
 class GameSettings;
 
@@ -17,9 +18,6 @@ public:
 	};
 public:
 	Board(const GameSettings& settings, Graphics& gfx );
-	Board(const Board&) = delete;
-	Board& operator=(const Board&) = delete;
-	~Board();
 	
 	void DrawCell( const Location& loc,Color c );
 	int GetGridWidth() const;
@@ -44,6 +42,6 @@ private:
 	static constexpr int borderPadding = 2;
 	static constexpr int x = 70;
 	static constexpr int y = 50;
-	CellContents* contents = nullptr;
+	std::vector<CellContents> contents;
 	Graphics& gfx;
 };

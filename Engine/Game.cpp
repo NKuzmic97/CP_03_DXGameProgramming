@@ -62,19 +62,31 @@ void Game::UpdateModel()
 		{
 			if( wnd.kbd.KeyIsPressed( VK_UP ) )
 			{
-				delta_loc = { 0,-1 };
+				const Location newDelta_loc = { 0,-1 };
+				if(delta_loc != -newDelta_loc || snek.GetLength() <= 2) {
+					delta_loc = newDelta_loc;
+				}
 			}
 			else if( wnd.kbd.KeyIsPressed( VK_DOWN ) )
 			{
-				delta_loc = { 0,1 };
+				const Location newDelta_loc = { 0,1 };
+				if (delta_loc != -newDelta_loc || snek.GetLength() <= 2) {
+					delta_loc = newDelta_loc;
+				}
 			}
 			else if( wnd.kbd.KeyIsPressed( VK_LEFT ) )
 			{
-				delta_loc = { -1,0 };
+				const Location newDelta_loc = { -1,0 };
+				if (delta_loc != -newDelta_loc || snek.GetLength() <= 2) {
+					delta_loc = newDelta_loc;
+				}
 			}
 			else if( wnd.kbd.KeyIsPressed( VK_RIGHT ) )
 			{
-				delta_loc = { 1,0 };
+				const Location newDelta_loc = { 1,0 };
+				if (delta_loc != -newDelta_loc || snek.GetLength() <= 2) {
+					delta_loc = newDelta_loc;
+				}
 			}
 
 			float snekModifiedMovePeriod = snekMovePeriod;
@@ -88,7 +100,7 @@ void Game::UpdateModel()
 			{
 				snekMoveCounter -= snekModifiedMovePeriod;
 				const Location next = snek.GetNextHeadLocation( delta_loc );
-				const Board::CellContents contents = brd.GetContents( next );
+				const Board::CellContents contents = brd.IsInsideBoard(next) ? brd.GetContents( next ) : Board::CellContents::Obstacle;
 				if( !brd.IsInsideBoard( next ) ||
 					snek.IsInTileExceptEnd( next ) ||
 					contents == Board::CellContents::Obstacle )
