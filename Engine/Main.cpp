@@ -1,79 +1,103 @@
-/******************************************************************************************
-*	Chili DirectX Framework Version 16.07.20											  *
-*	Main.cpp																			  *
-*	Copyright 2016 PlanetChili.net <http://www.planetchili.net>							  *
-*																						  *
-*	This file is part of The Chili DirectX Framework.									  *
-*																						  *
-*	The Chili DirectX Framework is free software: you can redistribute it and/or modify	  *
-*	it under the terms of the GNU General Public License as published by				  *
-*	the Free Software Foundation, either version 3 of the License, or					  *
-*	(at your option) any later version.													  *
-*																						  *
-*	The Chili DirectX Framework is distributed in the hope that it will be useful,		  *
-*	but WITHOUT ANY WARRANTY; without even the implied warranty of						  *
-*	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the						  *
-*	GNU General Public License for more details.										  *
-*																						  *
-*	You should have received a copy of the GNU General Public License					  *
-*	along with The Chili DirectX Framework.  If not, see <http://www.gnu.org/licenses/>.  *
-******************************************************************************************/
-#include "MainWindow.h"
-#include "Game.h"
-#include "ChiliException.h"
+#include <vector>
+#include <fstream>
+#include <iostream>
+#include <string>
+#include <random>
+#include <algorithm>
+#include <cctype>
 
-int WINAPI wWinMain( HINSTANCE hInst,HINSTANCE,LPWSTR pArgs,INT )
-{
-	try
+bool vector_contains_word(const std::vector<std::string>& vec, const std::string& word) {
+	for(const auto& w : vec) {
+		if(w == word) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+std::vector<int> fill_buckets(const std::string& word) {
+	std::vector<int> buckets(26, 0);
+	
+	for(char c : word) {
+		buckets[c - 'a']++;
+	}
+
+	return buckets;
+}
+
+int score_match(const std::string& word1, const std::string& word2) {
+	const auto buckets1 = fill_buckets(word1);
+	const auto buckets2 = fill_buckets(word2);
+
+	int score = 0;
+	
+	for(int i=0;i<26;i++) {
+		score += std::min(buckets1[i], buckets2[i]);
+	}
+
+	for(int i=0;i<5;i++) {
+		if(word1[i] == word2[i]) {
+			score++;
+		}	
+	}
+
+	return score;
+}
+
+int main() {
+	std::vector<std::string> five_words;
+
 	{
-		MainWindow wnd( hInst,pArgs );		
-		try
-		{
-			Game theGame( wnd );
-			while( wnd.ProcessMessage() )
-			{
-				theGame.Go();
+	std::ifstream five_word_file("words.txt");
+	for(std::string line;std::getline(five_word_file,line);) {
+		if(line.empty()) {
+			continue;;
+		}
+
+		five_words.push_back(line);
+	}
+	}
+
+	std::mt19937 rng(std::random_device{}());
+	const std::uniform_int_distribution<int> dist(0, five_words.size() - 1);
+
+	const std::string target = five_words[dist(rng)];
+
+	while(true){
+
+		std::cout << "Guess a five letter word: ";
+		std::string guess;
+		std::getline(std::cin, guess);
+
+		for(auto& c : guess) {
+			c = std::tolower(c);
+		}
+
+		if(guess.size() != 5) {
+			std::cout << "That is not a five letter word" << std::endl;
+			continue;
+		}
+
+		if(!vector_contains_word(five_words,guess)){
+			std::cout << "That is not a legit word" << std::endl;
+			continue;
+		}
+
+		const int score = score_match(guess, target);
+			if(score == 10) {
+				std::cout << "You have won!" << std::endl;
+				break;
 			}
-		}
-		catch( const ChiliException& e )
-		{
-			const std::wstring eMsg = e.GetFullMessage() + 
-				L"\n\nException caught at Windows message loop.";
-			wnd.ShowMessageBox( e.GetExceptionType(),eMsg );
-		}
-		catch( const std::exception& e )
-		{
-			// need to convert std::exception what() string from narrow to wide string
-			const std::string whatStr( e.what() );
-			const std::wstring eMsg = std::wstring( whatStr.begin(),whatStr.end() ) + 
-				L"\n\nException caught at Windows message loop.";
-			wnd.ShowMessageBox( L"Unhandled STL Exception",eMsg );
-		}
-		catch( ... )
-		{
-			wnd.ShowMessageBox( L"Unhandled Non-STL Exception",
-				L"\n\nException caught at Windows message loop." );
-		}
-	}
-	catch( const ChiliException& e )
-	{
-		const std::wstring eMsg = e.GetFullMessage() +
-			L"\n\nException caught at main window creation.";
-		MessageBox( nullptr,eMsg.c_str(),e.GetExceptionType().c_str(),MB_OK );
-	}
-	catch( const std::exception& e )
-	{
-		// need to convert std::exception what() string from narrow to wide string
-		const std::string whatStr( e.what() );
-		const std::wstring eMsg = std::wstring( whatStr.begin(),whatStr.end() ) +
-			L"\n\nException caught at main window creation.";
-		MessageBox( nullptr,eMsg.c_str(),L"Unhandled STL Exception",MB_OK );
-	}
-	catch( ... )
-	{
-		MessageBox( nullptr,L"\n\nException caught at main window creation.",
-			L"Unhandled Non-STL Exception",MB_OK );
-	}
+			else {
+				std::cout << "Incorrect. You gained " << score << " points for your guess." << std::endl;
+				continue;
+			}
 
+		
+	}
+	std::cin.clear();
+	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+	std::cin.get();
 	return 0;
 }
