@@ -136,6 +136,34 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="ChiliException.h" />
+    <ClInclude Include="ChiliWin.h" />
+    <ClInclude Include="Colors.h" />
+    <ClInclude Include="COMInitializer.h" />
+    <ClInclude Include="DXErr.h" />
+    <ClInclude Include="Game.h" />
+    <ClInclude Include="Graphics.h" />
+    <ClInclude Include="Keyboard.h" />
+    <ClInclude Include="MainWindow.h" />
+    <ClInclude Include="Mouse.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="Sound.h" />
+    <ClInclude Include="SoundEffect.h" />
+    <ClInclude Include="Surface.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="COMInitializer.cpp" />
+    <ClCompile Include="DXErr.cpp" />
+    <ClCompile Include="Game.cpp" />
+    <ClCompile Include="Graphics.cpp" />
+    <ClCompile Include="Keyboard.cpp" />
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="MainWindow.cpp" />
+    <ClCompile Include="Mouse.cpp" />
+    <ClCompile Include="Sound.cpp" />
+    <ClCompile Include="Surface.cpp" />
+  </ItemGroup>
+  <ItemGroup>
     <FxCompile Include="FramebufferPS.hlsl">
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">FramebufferPS</EntryPointName>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
@@ -198,22 +226,14 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <ResourceCompile Include="Resource.rc" />
+  </ItemGroup>
+  <ItemGroup>
     <Image Include="Chili.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Media Include="Sounds\Eat.wav" />
-    <Media Include="Sounds\Fart.wav" />
-    <Media Include="Sounds\Music_Loop.wav" />
-    <Media Include="Sounds\Slither0.wav" />
-    <Media Include="Sounds\Slither1.wav" />
-    <Media Include="Sounds\Slither2.wav" />
-    <Media Include="Sounds\Title.wav" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="main.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="words.txt" />
+    <Image Include="res\dib.bmp" />
+    <Image Include="res\dib32.bmp" />
+    <Image Include="res\dibr.bmp" />
+    <Image Include="res\rgb.bmp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
