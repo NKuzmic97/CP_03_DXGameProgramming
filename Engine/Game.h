@@ -23,7 +23,15 @@
 #include "Keyboard.h"
 #include "Mouse.h"
 #include "Graphics.h"
+#include "Poo.h"
+#include "Dude.h"
+#include "Goal.h"
+#include "Meter.h"
+#include "SoundEffect.h"
+#include <random>
+#include "FrameTimer.h"
 #include "Surface.h"
+#include <vector>
 
 class Game
 {
@@ -37,12 +45,32 @@ private:
 	void UpdateModel();
 	/********************************/
 	/*  User Functions              */
+	void DrawGameOver(int x, int y);
+	void DrawTitleScreen(int x, int y);
 	/********************************/
 private:
 	MainWindow& wnd;
 	Graphics gfx;
 	/********************************/
 	/*  User Variables              */
-	Surface surf = Surface("res/marle32x48.bmp");
+	FrameTimer ft;
+	std::random_device rd;
+	std::mt19937 rng;
+	std::uniform_real_distribution<float> xDist;
+	std::uniform_real_distribution<float> yDist;
+	Dude dude;
+	Goal goal;
+	Meter meter;
+	static constexpr int nPoo = 10;
+	std::vector<Poo> poos;
+	bool isStarted = false;
+	bool isGameOver = false;
+	SoundEffect pickup = SoundEffect( { L"Sounds\\coin.wav" } );
+	Sound title = Sound( L"Sounds\\title.wav" );
+	SoundEffect fart = SoundEffect( 
+		{ L"Sounds\\fart1.wav",L"Sounds\\fart2.wav" } );
+	Surface titleScreen = Surface("poo_images\\dapoopoo.bmp");
+	Surface gameOverScreen = Surface("poo_images\\game_over.bmp");
+	Surface pooSprite = Surface("poo_images\\poo.bmp");
 	/********************************/
 };

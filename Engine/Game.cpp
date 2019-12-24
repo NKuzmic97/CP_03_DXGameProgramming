@@ -20,13 +20,25 @@
  ******************************************************************************************/
 #include "MainWindow.h"
 #include "Game.h"
-#include "RectI.h"
+#include <random>
 
 Game::Game( MainWindow& wnd )
 	:
 	wnd( wnd ),
-	gfx( wnd )
+	gfx( wnd ),
+	rng( rd() ),
+	xDist( 0,770 ),
+	yDist( 0,570 ),
+	goal( Vec2( xDist( rng ),yDist( rng ) ) ),
+	meter( 20,20 )
 {
+	std::uniform_real_distribution<float> vDist( -2.5f * 60.0f,2.5f * 60.0f );
+	poos.reserve(nPoo);
+	for( int i = 0; i < nPoo; ++i )
+	{
+		poos.emplace_back( Vec2( xDist( rng ),yDist( rng ) ),Vec2( vDist( rng ),vDist( rng ) ),pooSprite);
+	}
+	title.Play();
 }
 
 void Game::Go()
@@ -39,9 +51,66 @@ void Game::Go()
 
 void Game::UpdateModel()
 {
+	const float dt = ft.Mark();
+
+	goal.UpdateColor();
+	if( isStarted && !isGameOver )
+	{
+		dude.Update( wnd.mouse,dt );
+		dude.ClampToScreen();
+
+		for( int i = 0; i < nPoo; ++i )
+		{
+			poos[i].Update( dt );
+			if( poos[i].TestCollision( dude ) )
+			{
+				isGameOver = true;
+				fart.Play( rng );
+			}
+		}
+
+		if( goal.TestCollision( dude ) )
+		{
+			goal.Respawn( Vec2( xDist( rng ),yDist( rng ) ) );
+			meter.IncreaseLevel();
+			pickup.Play( rng );
+		}
+	}
+	else
+	{
+		if( wnd.kbd.KeyIsPressed( VK_RETURN ) )
+		{
+			isStarted = true;
+		}
+	}
+}
+
+void Game::DrawGameOver(int x, int y) {
+	gfx.DrawSprite(x, y, gameOverScreen, Colors::Black);
+}
+
+void Game::DrawTitleScreen(int x, int y) {
+	gfx.DrawSpriteNonChroma(x, y, titleScreen);
 }
 
 void Game::ComposeFrame()
 {
-	gfx.DrawSprite(wnd.mouse.GetPosX(), wnd.mouse.GetPosY(), { 32,64,48,96 }, {100,300,100,300},surf);
+	if( !isStarted )
+	{
+		DrawTitleScreen( 250,100 );
+	}
+	else
+	{
+		goal.Draw( gfx );
+		for( int i = 0; i < nPoo; ++i )
+		{
+			poos[i].Draw( gfx );
+		}
+		dude.Draw( gfx );
+		if( isGameOver )
+		{
+			DrawGameOver( 358,268 );
+		}
+		meter.Draw( gfx );
+	}
 }

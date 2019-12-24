@@ -241,6 +241,34 @@ Graphics::Graphics( HWNDKey& key )
 		_aligned_malloc( sizeof( Color ) * Graphics::ScreenWidth * Graphics::ScreenHeight,16u ) );
 }
 
+void Graphics::DrawRect(int x0, int y0, int x1, int y1, Color c) {
+	if (x0 > x1) {
+		std::swap(x0, x1);
+	}
+	if (y0 > y1) {
+		std::swap(y0, y1);
+	}
+
+	for (int y = y0; y < y1; ++y) {
+		for (int x = x0; x < x1; ++x) {
+			PutPixel(x, y, c);
+		}
+	}
+}
+
+void Graphics::DrawCircle(int x, int y, int radius, Color c) {
+	const int rad_sq = radius * radius;
+	for (int y_loop = y - radius; y_loop < y + radius + 1; y_loop++) {
+		for (int x_loop = x - radius; x_loop < x + radius + 1; x_loop++) {
+			const int x_diff = x - x_loop;
+			const int y_diff = y - y_loop;
+			if (x_diff * x_diff + y_diff * y_diff <= rad_sq) {
+				PutPixel(x_loop, y_loop, c);
+			}
+		}
+	}
+}
+
 Graphics::~Graphics()
 {
 	// free sysbuffer memory (aligned free)
@@ -331,9 +359,9 @@ void Graphics::DrawSpriteNonChroma(int x, int y, const RectI& srcRect, const Sur
 
 void Graphics::DrawSpriteNonChroma(int x, int y, RectI srcRect, const RectI& clipRect, const Surface& s) {
 	assert(srcRect.left >= 0);
-	assert(srcRect.right < s.GetWidth());
+	assert(srcRect.right <= s.GetWidth());
 	assert(srcRect.top >= 0);
-	assert(srcRect.bottom < s.GetHeight());
+	assert(srcRect.bottom <= s.GetHeight());
 
 	if(x < clipRect.left) {
 		srcRect.left += clipRect.left - x;
@@ -362,9 +390,9 @@ void Graphics::DrawSpriteNonChroma(int x, int y, RectI srcRect, const RectI& cli
 
 void Graphics::DrawSprite(int x, int y, RectI srcRect, const RectI & clipRect, const Surface & s, Color chroma) {
 	assert(srcRect.left >= 0);
-	assert(srcRect.right < s.GetWidth());
+	assert(srcRect.right <= s.GetWidth());
 	assert(srcRect.top >= 0);
-	assert(srcRect.bottom < s.GetHeight());
+	assert(srcRect.bottom <= s.GetHeight());
 
 	if (x < clipRect.left) {
 		srcRect.left += clipRect.left - x;

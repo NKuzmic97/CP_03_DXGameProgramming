@@ -244,5 +244,5 @@ ModelManifest.xml
 # FAKE - F# Make
 .fake/
 
-# Precompiled Shader Header Files
+# Ignore dumb pre-compiled shader header files
 *.shh
