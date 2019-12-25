@@ -1,23 +1,24 @@
 #pragma once
+
 #include "Colors.h"
 #include <string>
 #include "RectI.h"
 
-class Surface {
+class Surface
+{
 public:
-	Surface(int width, int height);
-	Surface(const std::string& filename);
-	Surface(const Surface&);
-	Surface& operator=(const Surface&);
+	Surface( const std::string& filename );
+	Surface( int width,int height );
+	Surface( const Surface& );
 	~Surface();
-
-	void PutPixel(int x, int y, Color col);
-	Color GetPixel(int x, int y) const;
+	Surface& operator=( const Surface& );
+	void PutPixel( int x,int y,Color c );
+	Color GetPixel( int x,int y ) const;
 	int GetWidth() const;
 	int GetHeight() const;
 	RectI GetRect() const;
 private:
-	Color* ptrPixels = nullptr;
+	Color* pPixels = nullptr;
 	int width;
 	int height;
 };
