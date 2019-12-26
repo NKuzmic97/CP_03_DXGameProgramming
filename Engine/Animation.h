@@ -8,6 +8,7 @@ public:
 	void Draw(const Vei2& pos,class Graphics& gfx) const;
 	void Draw(const Vei2& pos, class Graphics& gfx, const RectI& clip) const;
 	void DrawColor(const Vei2& pos, class Graphics& gfx, Color c) const;
+	void DrawTransparency(const Vei2& pos, Graphics& gfx, float transparency) const;
 	void Update(float dt);
 private:
 	void Advance();

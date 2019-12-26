@@ -65,6 +65,7 @@ void Game::UpdateModel() {
 
 void Game::ComposeFrame()
 {
-	link.Draw(gfx);
 	font.DrawText("Nemanja\nKuzmic",wnd.mouse.GetPos(),Colors::White, gfx);
+	link.Draw(gfx);
+
 }
