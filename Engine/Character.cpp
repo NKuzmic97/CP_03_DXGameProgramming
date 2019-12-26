@@ -16,7 +16,13 @@ pos(pos)
 }
 
 void Character::Draw(Graphics& gfx) const {
-	animations[(int)curSeq].Draw((Vei2)pos, gfx);
+	if(effectActive) {
+		animations[(int)curSeq].DrawColor((Vei2)pos, gfx, Colors::Red);
+
+	}
+	else {
+		animations[(int)curSeq].Draw((Vei2)pos, gfx);
+	}
 }
 
 void Character::SetDirection(const Vec2& dir) {
@@ -55,4 +61,15 @@ void Character::SetDirection(const Vec2& dir) {
 void Character::Update(float dt) {
 	pos += vel * dt;
 	animations[(int)curSeq].Update(dt);
+	if(effectActive) {
+		effectTime += dt;
+		if(effectTime >= effectDuration) {
+			effectActive = false;
+		}
+	}
+}
+
+void Character::ActivateEffect() {
+	effectActive = true;
+	effectTime = 0.0f;
 }

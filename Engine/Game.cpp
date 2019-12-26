@@ -36,8 +36,15 @@ void Game::Go()
 	gfx.EndFrame();
 }
 
-void Game::UpdateModel()
-{
+void Game::UpdateModel() {
+
+	while (!wnd.kbd.KeyIsEmpty()) {
+		const auto e = wnd.kbd.ReadKey();
+		if(e.IsPress() && e.GetCode() == VK_SPACE) {
+			link.ActivateEffect();
+			hit.Play();
+		}
+	}
 	Vec2 dir = { 0.0f,0.0f };
 	if(wnd.kbd.KeyIsPressed(VK_UP)) {
 		dir.y -= 1.0f;
@@ -59,4 +66,5 @@ void Game::UpdateModel()
 void Game::ComposeFrame()
 {
 	link.Draw(gfx);
+	font.DrawText("Nemanja\nKuzmic",wnd.mouse.GetPos(),Colors::White, gfx);
 }
