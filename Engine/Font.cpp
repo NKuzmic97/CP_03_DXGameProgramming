@@ -1,6 +1,7 @@
 #include "Font.h"
 #include <cassert>
 #include "Graphics.h"
+#include "SpriteEffect.h"
 
 Font::Font(const std::string& filename, Color chroma)
 	:
@@ -16,6 +17,8 @@ Font::Font(const std::string& filename, Color chroma)
 }
 
 void Font::DrawText(const std::string& text, const Vei2& pos,Color color, Graphics& gfx) const {
+	// create effect functor
+	SpriteEffect::Substitution e{ chroma,color };
 	// curPos is the pos that we are drawing to on the screen
 	auto curPos = pos;
 	for(auto c : text) {
@@ -32,7 +35,7 @@ void Font::DrawText(const std::string& text, const Vei2& pos,Color color, Graphi
 		// only draw characters that are on the font sheet
 		// firstChar + 1 because might as well skip ' '
 		else if( c >= firstChar +1 && c <= endChar) {
-			gfx.DrawSpriteSubstitute(curPos.x, curPos.y,color, MapGlyphRect(c),Graphics::GetScreenRect(), surface,chroma);
+			gfx.DrawSprite(curPos.x, curPos.y, MapGlyphRect(c),Graphics::GetScreenRect(), surface,e);
 		}
 		// advance screen pos for next character
 		curPos.x += glyphWidth;

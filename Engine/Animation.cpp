@@ -1,5 +1,6 @@
 #include "Animation.h"
 #include "Graphics.h"
+#include "SpriteEffect.h"
 
 Animation::Animation(int x, int y, int width, int height, 
 	int count, const Surface& sprite, float holdTime, Color chroma)
@@ -14,16 +15,16 @@ chroma(chroma)
 }
 
 void Animation::Draw(const Vei2& pos, Graphics& gfx) const {
-	gfx.DrawSpriteTransparency(pos.x, pos.y, frames[iCurFrame], sprite, chroma);
+	gfx.DrawSprite(pos.x, pos.y, frames[iCurFrame], sprite,SpriteEffect::Ghost{chroma});
 }
 
 void Animation::Draw(const Vei2& pos, Graphics& gfx, const RectI& clip) const {
-	gfx.DrawSpriteTransparency(pos.x, pos.y, frames[iCurFrame],clip, sprite, chroma);
+	gfx.DrawSprite(pos.x, pos.y, frames[iCurFrame],clip, sprite, SpriteEffect::Chroma(chroma));
 
 }
 
 void Animation::DrawColor(const Vei2& pos, Graphics& gfx, Color c) const {
-	gfx.DrawSpriteSubstitute(pos.x, pos.y,c, frames[iCurFrame], sprite, chroma);
+	gfx.DrawSprite(pos.x, pos.y, frames[iCurFrame], sprite,SpriteEffect::Substitution{chroma,c});
 }
 
 void Animation::Update(float dt) {
