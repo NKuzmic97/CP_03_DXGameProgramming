@@ -1,0 +1,94 @@
+original - release x64:
+Mean: 9.8783ms
+Min: 9.8485ms
+Max: 9.9163ms
+
+original - debug x64:
+Mean: 2501.8ms
+Min: 2496.33ms
+Max: 2509.8ms
+
+--------------------------------------------
+
+graphics surf - release x64:
+Mean: 10.9654ms
+Min: 10.5312ms
+Max: 11.8855ms
+
+graphics surf - debug x64:
+Mean: 2079.19ms
+Min: 2056.67ms
+Max: 2143.86ms
+
+--------------------------------------------
+
+surface w/ std::vector - release x64:
+Mean: 13.6069ms
+Min: 12.8222ms
+Max: 15.6747ms
+
+surface w/ std::vector - debug x64:
+Mean: 7223.25ms
+Min: 7092.16ms
+Max: 7319.68ms
+
+--------------------------------------------
+
+surface w/ std::vector + Ox - release x64:
+Mean: 10.9357ms
+Min: 10.8902ms
+Max: 11.0111ms
+
+surface w/ std::vector + Ox - debug x64:
+Mean: 1132.57ms
+Min: 1105.75ms
+Max: 1179.73ms
+
+--------------------------------------------
+
+using data() instead of [] in surface class - release x64:
+Mean: 30.9839ms
+Min: 28.982ms
+Max: 32.1839ms
+
+???????????????
+
+using data() instead of [] in surface class - debug x64:
+Mean: 1064.51ms
+Min: 1051.57ms
+Max: 1089.07ms
+
+--------------------------------------------
+adding GraphicsOx.cpp with Ox flag - release x64:
+Mean: 28.6092ms
+Min: 28.3953ms
+Max: 28.895ms
+
+adding GraphicsOx.cpp with Ox flag - debug x64:
+Mean: 624.333ms
+Min: 615.239ms
+Max: 633.828ms
+
+--------------------------------------------
+graphics w/o surface - release x64:
+Mean: 9.92782ms
+Min: 9.8367ms
+Max: 10.075ms
+
+graphics w/o surface - debug x64:
+Mean: 569.539ms
+Min: 565.818ms
+Max: 574.178ms
+
+---------------------------------------------
+extern template - release x64:
+Mean: 10.0652ms
+Min: 9.8993ms
+Max: 10.1453ms
+
+extern template - debug x64:
+Mean: 95.7706ms
+Min: 90.6467ms
+Max: 114.717ms
+
+--------------------------------------------

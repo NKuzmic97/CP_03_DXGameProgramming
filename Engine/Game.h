@@ -28,6 +28,7 @@
 #include "FrameTimer.h"
 #include "Font.h"
 #include "Sound.h"
+#include "Bencher.h"
 
 class Game
 {
@@ -47,10 +48,8 @@ private:
 	Graphics gfx;
 	/********************************/
 	/*  User Variables              */
-	FrameTimer ft;
-	Character link = Character({ 100.0f,100.0f });
-	Font font = Font("res/fonts/Fixedsys16x28.bmp");
-	Sound hit = L"hit.wav";
-	std::vector<Surface> surfaces;
+	std::vector<Vei2> positions;
+	Surface s = { "link90x90.bmp" };
+	Bencher bencher;
 	/********************************/
 };
