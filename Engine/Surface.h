@@ -12,11 +12,9 @@ public:
 	Surface( const std::string& filename );
 	Surface( int width,int height );
 	Surface( const Surface& );
-	Surface(Surface && donor);
-	Surface& operator=(Surface&& donor);
+	Surface(Surface&&) = default;
 	Surface& operator=(const Surface&);
-	~Surface();
-	
+	Surface& operator=(Surface&&) = default;
 	void PutPixel( int x,int y,Color c );
 	Color GetPixel( int x,int y ) const;
 	int GetWidth() const;
@@ -24,7 +22,7 @@ public:
 	RectI GetRect() const;
 	const Color* Data() const;
 private:
-	Color* pPixels = nullptr;
+	std::unique_ptr<Color[]> pPixels;
 	int width = 0;
 	int height = 0;
 };
